@@ -4,9 +4,7 @@ import Navbar from "./components/Navbar";
 import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import SignUp from "./SignUp";
-
-
+import SignUp from "./pages/SignUp";
 
 function App() {
   return (
@@ -15,10 +13,10 @@ function App() {
       <main className="max-w-7xl mx-auto px-6 py-8">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/" element={<Dashboard/>}/>
-          <Route path="/" element={<Login/>}/>
-          <Route path="/" element={<Hero />}/>
-          <Route path="/" element={<SignUp/>}/>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/hero" element={<Hero />} />
+          <Route path="/register" element={<SignUp />} />
         </Routes>
       </main>
     </Router>
