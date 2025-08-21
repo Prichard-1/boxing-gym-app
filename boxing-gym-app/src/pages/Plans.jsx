@@ -1,4 +1,4 @@
-import { createCheckoutSession } from "../services/stripe";
+import { createCheckoutSession } from "./services/stripe";
 
 function Plans() {
   const plans = [
@@ -39,3 +39,4 @@ function Plans() {
 }
 
 export default Plans;
+ 
