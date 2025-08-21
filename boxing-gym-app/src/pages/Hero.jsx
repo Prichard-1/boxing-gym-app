@@ -1,40 +1,29 @@
-import { Link } from "react-router-dom";
-
-function Hero() {
+export default function Hero() {
   return (
-    <section className="bg-gradient-to-b from-[#0f172a] to-[#1e293b] text-center text-white py-24 px-6">
-      {/* Tagline */}
-      <div className="inline-block bg-gray-800 text-sm px-4 py-1 rounded-full mb-6">
-        Professional Boxing Training
-      </div>
-
-      {/* Main Heading */}
-      <h1 className="text-4xl md:text-6xl font-extrabold">
-        Train Like a <span className="text-primary">Champion</span>
-      </h1>
-
-      {/* Subtitle */}
-      <p className="mt-6 text-lg text-gray-300 max-w-2xl mx-auto">
-        Join our world-class boxing gym and unleash your potential with expert trainers, modern equipment, and a supportive community.
-      </p>
-
-      {/* Buttons */}
-      <div className="mt-8 flex justify-center space-x-4">
-        <Link
-          to="/register"
-          className="bg-black text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-800"
-        >
-          Start Your Journey
-        </Link>
-        <Link
-          to="/plans"
-          className="bg-gray-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-600"
-        >
-          View Plans
-        </Link>
+    <section className="bg-gradient-to-r from-red-600 to-black text-white py-20 rounded-2xl shadow-lg">
+      <div className="max-w-4xl mx-auto text-center px-6">
+        <h1 className="text-4xl md:text-5xl font-extrabold mb-6">
+          Welcome to Boxing Gym
+        </h1>
+        <p className="text-lg md:text-xl mb-8">
+          Train like a champion. Book your sessions, track your progress, and
+          stay motivated with our boxing community.
+        </p>
+        <div className="flex justify-center gap-4">
+          <a
+            href="/plans"
+            className="bg-white text-black px-6 py-3 rounded-lg font-semibold shadow hover:bg-gray-200"
+          >
+            View Plans
+          </a>
+          <a
+            href="/register"
+            className="bg-black border border-white text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-900"
+          >
+            Join Now
+          </a>
+        </div>
       </div>
     </section>
   );
 }
-
-export default Hero;
