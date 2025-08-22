@@ -26,4 +26,4 @@ const  Auth0ProviderWithHistory = ({children}) => {
     );
 };
 
-export default Auth0ProviderWidthHistory;
+export default Auth0ProviderWithHistory
