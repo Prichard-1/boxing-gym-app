@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import calendarRoutes from "./routes/calendar.js";
 
 dotenv.config();
 const app = express();
@@ -17,3 +18,5 @@ app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`)
 
 const stripeRoutes = require("./routes/stripe");
 app.use("/api/stripe", stripeRoutes);
+
+app.use("/api/calendar", calendarRoutes);
