@@ -1,18 +1,16 @@
 import Hero from "./Hero";
 
 
-export default function Home() {
+function Home() {
   return (
-    <div className="space-y-12">
-      <Hero />
-      <section className="text-center">
-        <h2 className="text-3xl font-bold mb-4">Why Train With Us?</h2>
-        <p className="text-gray-600 max-w-2xl mx-auto">
-          Our boxing gym provides professional coaching, flexible plans, and a
-          community that helps you achieve your fitness goals. From beginners to
-          pros, we’ve got you covered.
-        </p>
-      </section>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 text-center p-6">
+      <h1 className="text-5xl font-bold mb-4">Iron Fist Boxing Gym</h1>
+      <p className="text-lg mb-6">Train like a champion. Book your sessions today!</p>
+      <div className="space-x-4">
+        <a href="/register" className="bg-red-600 text-white px-6 py-3 rounded hover:bg-red-700">Register</a>
+        <a href="/booking" className="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700">Book Session</a>
+      </div>
     </div>
   );
 }
+
