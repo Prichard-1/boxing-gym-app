@@ -1,4 +1,5 @@
-import { Routes, Route } from "react-router-dom";
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Hero from "./pages/Hero";
 import Navbar from "./components/Navbar";
 import Dashboard from "./pages/Dashboard";
@@ -8,10 +9,9 @@ import SignUp from "./pages/SignUp";
 import Contacts from "./pages/Contacts";
 import Plans from './pages/Plans';
 
-
 function App() {
   return (
-    <>
+    <Router>
       <Navbar />
       <main className="max-w-7xl mx-auto px-6 py-8">
         <Routes>
@@ -24,9 +24,10 @@ function App() {
           <Route path="/plans" element={<Plans />} />
         </Routes>
       </main>
-    </>
+    </Router>
   );
 }
 
 export default App;
+
 

@@ -1,22 +1,13 @@
-import express from "express";
-import cors from "cors";
-import dotenv from "dotenv";
-import calendarRoutes from "./routes/calendar.js";
-
-dotenv.config();
+const express = require('express');
 const app = express();
+const dotenv = require('dotenv');
+dotenv.config();
 
-app.use(cors());
-app.use(express.json());
+app.use(express.json()); // Parse JSON in POST requests
 
-app.get("/", (req, res) => {
-  res.json({ message: "Boxing Gym Backend Running ✅" });
-});
+// Import routes
+const plansRoutes = require('./routes/plans');
+app.use('/api/plans', plansRoutes);
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
-
-const stripeRoutes = require("./routes/stripe");
-app.use("/api/stripe", stripeRoutes);
-
-app.use("/api/calendar", calendarRoutes);
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
