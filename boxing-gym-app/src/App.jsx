@@ -1,5 +1,5 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React from "react";
+import { Routes, Route } from "react-router-dom";
 import Hero from "./pages/Hero";
 import Navbar from "./components/Navbar";
 import Dashboard from "./pages/Dashboard";
@@ -7,11 +7,12 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import Contacts from "./pages/Contacts";
-import Plans from './pages/Plans';
+import Plans from "./pages/Plans";
+import Booking from "./pages/Bookings";
 
 function App() {
   return (
-    <Router>
+    <>
       <Navbar />
       <main className="max-w-7xl mx-auto px-6 py-8">
         <Routes>
@@ -22,12 +23,14 @@ function App() {
           <Route path="/register" element={<SignUp />} />
           <Route path="/contact" element={<Contacts />} />
           <Route path="/plans" element={<Plans />} />
+          <Route path="/booking" element={<Booking />} />
         </Routes>
       </main>
-    </Router>
+    </>
   );
 }
 
 export default App;
+
 
 
