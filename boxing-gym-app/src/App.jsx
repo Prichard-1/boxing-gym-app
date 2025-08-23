@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import Contacts from "./pages/Contacts";
+import Plans from './pages/Plans';
 
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
           <Route path="/hero" element={<Hero />} />
           <Route path="/register" element={<SignUp />} />
           <Route path="/contact" element={<Contacts />} />
+          <Route path="/plans" element={<Plans />} />
         </Routes>
       </main>
     </>
