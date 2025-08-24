@@ -19,7 +19,7 @@ function App() {
   return (
     <div
       className="min-h-screen flex flex-col bg-cover bg-center bg-fixed"
-      style={{ backgroundImage: "url('/images/wallpaper.jpg')" }}
+      style={{ backgroundImage: "url('https://share.google/images/xVe0HZgCe4zF7vPLe')" }}
     >
       {/* Navbar */}
       <Navbar />

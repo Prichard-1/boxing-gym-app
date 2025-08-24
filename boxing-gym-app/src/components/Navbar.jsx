@@ -16,6 +16,7 @@ function Navbar() {
         <nav className="hidden md:flex space-x-8 text-gray-700 font-medium">
           <Link to="/">Home</Link>
           <Link to="/plans">Plans</Link>
+          <Link to="/workouts">Workouts</Link> {/* ✅ Added Workouts */}
           <Link to="/contact">Contact</Link>
           <Link to="/dashboard">Dashboard</Link>
           <Link to="/booking">Booking</Link>
@@ -39,4 +40,3 @@ function Navbar() {
 }
 
 export default Navbar;
-
