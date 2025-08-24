@@ -9,6 +9,8 @@ import SignUp from "./pages/SignUp";
 import Contacts from "./pages/Contacts";
 import Plans from "./pages/Plans";
 import Booking from "./pages/Bookings";
+import TestStripe from "./components/TestStripe";
+import Success from "./pages/Success";
 
 function App() {
   return (
@@ -24,6 +26,8 @@ function App() {
           <Route path="/contact" element={<Contacts />} />
           <Route path="/plans" element={<Plans />} />
           <Route path="/booking" element={<Booking />} />
+          <Route path="/teststripe" element={<TestStripe/>}/>
+          <Route path="/success" element={<Success/>}/>
         </Routes>
       </main>
     </>
