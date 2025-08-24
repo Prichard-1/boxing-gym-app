@@ -1,38 +1,62 @@
+// src/pages/Plans.jsx
 import React from "react";
-import axios from "axios";
 
+// Example images: put your images in public/images/plans/
 const plans = [
-  { name: "basic", price: 20, desc: "Access to gym and classes" },
-  { name: "pro", price: 50, desc: "Basic + personal training" },
-  { name: "premium", price: 80, desc: "All access + nutrition plan" },
+  {
+    title: "Basic Plan",
+    price: "$20/month",
+    benefits: ["Access to gym equipment", "1 group class/week", "Community support"],
+    image: "/images/basic-plan.jpg",
+  },
+  {
+    title: "Pro Plan",
+    price: "$50/month",
+    benefits: ["All Basic benefits", "3 group classes/week", "Personal training session"],
+    image: "/images/pro-plan.jpg",
+  },
+  {
+    title: "Elite Plan",
+    price: "$80/month",
+    benefits: ["All Pro benefits", "Unlimited classes", "Personal coaching", "Nutrition guide"],
+    image: "/images/elite-plan.jpg",
+  },
 ];
 
 export default function Plans() {
-  const handleSubscribe = async (plan) => {
-    try {
-      const res = await axios.post("http://localhost:5000/create-checkout-session", { plan });
-      window.location.href = res.data.url; // Redirect to Stripe Checkout
-    } catch (err) {
-      console.error(err);
-      alert("Failed to create checkout session.");
-    }
-  };
-
   return (
-    <div className="max-w-6xl mx-auto px-6 py-20 text-center grid md:grid-cols-3 gap-6">
-      {plans.map((plan) => (
-        <div key={plan.name} className="p-6 bg-white rounded shadow">
-          <h2 className="text-xl font-bold mb-2 capitalize">{plan.name}</h2>
-          <p className="mb-4">{plan.desc}</p>
-          <p className="mb-4 font-semibold">${plan.price} / month</p>
-          <button
-            onClick={() => handleSubscribe(plan.name)}
-            className="px-4 py-2 bg-blue-600 text-white rounded"
+    <section className="min-h-screen py-20 bg-white/70 backdrop-blur-md rounded-2xl shadow-2xl mx-6 my-10 p-8">
+      <h1 className="text-4xl font-bold mb-12 text-center">Our Plans</h1>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {plans.map((plan, index) => (
+          <div
+            key={index}
+            className="bg-white shadow-2xl rounded-2xl overflow-hidden transform hover:scale-105 transition-transform duration-300"
           >
-            Subscribe
-          </button>
-        </div>
-      ))}
-    </div>
+            <img
+              src={plan.image}
+              alt={plan.title}
+              className="w-full h-48 object-cover"
+            />
+            <div className="p-6 text-center">
+              <h2 className="text-2xl font-bold mb-4">{plan.title}</h2>
+              <p className="text-xl text-gray-700 mb-4">{plan.price}</p>
+              <ul className="text-gray-600 mb-6">
+                {plan.benefits.map((benefit, i) => (
+                  <li key={i} className="mb-2">• {benefit}</li>
+                ))}
+              </ul>
+              <a
+                href="/register"
+                className="bg-red-600 text-white px-6 py-3 rounded-lg font-semibold shadow hover:bg-red-700 transition-colors"
+              >
+                Choose Plan
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }

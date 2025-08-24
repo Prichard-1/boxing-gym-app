@@ -1,6 +1,14 @@
 export default function Hero() {
   return (
-    <section className="bg-gradient-to-r from-red-600 to-black text-white py-20 rounded-2xl shadow-lg">
+    <section
+      className="relative text-white py-20 rounded-2xl shadow-lg"
+      style={{
+        backgroundImage:
+          "linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/images/wallpaper.jpg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
       <div className="max-w-4xl mx-auto text-center px-6">
         <h1 className="text-4xl md:text-5xl font-extrabold mb-6">
           Welcome to Boxing Gym
