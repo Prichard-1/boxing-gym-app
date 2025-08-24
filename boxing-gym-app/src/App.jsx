@@ -13,6 +13,7 @@ import Success from "./pages/Success";
 import Footer from "./components/Footer";
 import About from "./pages/About";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import Workout from "./pages/Workout";
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
             <Route path="/success" element={<Success />} />
             <Route path="/about" element={<About />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/workouts" element={<Workout />} />
           </Routes>
         </div>
       </main>
