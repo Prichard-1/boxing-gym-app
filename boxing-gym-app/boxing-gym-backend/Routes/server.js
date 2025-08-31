@@ -1,90 +1,87 @@
-import 'dotenv/config';
-import express from 'express';
-import Stripe from 'stripe';
-import cors from 'cors';
-import bodyParser from 'body-parser';
+import express from "express";
+import Stripe from "stripe";
+import dotenv from "dotenv";
+import cors from "cors";
+
+dotenv.config();
 
 const app = express();
+app.use(express.json());
+
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST"],
+    credentials: true,
+  })
+);
+
+// ✅ Initialize Stripe
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-app.use(cors());
-app.use(bodyParser.json());
+// ✅ In-memory user store
+let users = [];
 
-// Map plan names to Price IDs (for subscription)
-const priceMap = {
-  basic: process.env.PRICE_BASIC,
-  pro_plan: process.env.PRICE_PRO_PLAN,
-  premium: process.env.PRICE_PREMIUM,
-};
-
-// Sample available slots (for one-time bookings)
-const allSlots = ["08:00 AM", "10:00 AM", "12:00 PM", "02:00 PM", "04:00 PM"];
-
-// Test route
-app.get('/', (req, res) => {
-  res.send('Server is running!');
-});
-
-// Get available slots for a date
-app.get('/api/slots', (req, res) => {
-  res.json(allSlots);
-});
-
-// Create checkout session for **subscription plans**
-app.post('/api/create-subscription', async (req, res) => {
-  const { plan } = req.body;
-
-  if (!priceMap[plan]) {
-    return res.status(400).json({ error: 'Invalid plan selected' });
-  }
-
+// ✅ Payment intent endpoint
+app.post("/create-payment-intent", async (req, res) => {
   try {
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      mode: 'subscription',
-      line_items: [{ price: priceMap[plan], quantity: 1 }],
-      success_url: `${req.headers.origin}/success`,
-      cancel_url: `${req.headers.origin}/cancel`,
+    const { amount } = req.body;
+    if (!amount) return res.status(400).json({ error: "Missing amount" });
+
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount,
+      currency: "usd",
+      automatic_payment_methods: { enabled: true },
     });
 
-    res.json({ url: session.url });
+    res.json({ clientSecret: paymentIntent.client_secret });
   } catch (error) {
-    console.error('Stripe subscription error:', error);
+    console.error("Stripe error:", error);
     res.status(500).json({ error: error.message });
   }
 });
 
-// Create checkout session for **one-time bookings**
-app.post('/api/create-booking', async (req, res) => {
-  const { name, email, date, time } = req.body;
+// ✅ Registration endpoint
+app.post("/register", (req, res) => {
+  const { name, email, password, plan } = req.body;
 
-  try {
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      customer_email: email,
-      line_items: [
-        {
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: `Gym Session - ${date} at ${time}`,
-            },
-            unit_amount: 2000, // $20 per session
-          },
-          quantity: 1,
-        },
-      ],
-      mode: 'payment',
-      success_url: `${req.headers.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.headers.origin}/booking`,
-    });
-
-    res.json({ id: session.id });
-  } catch (err) {
-    console.error('Stripe booking error:', err);
-    res.status(500).json({ error: 'Failed to create Stripe session' });
+  if (!name || !email || !password) {
+    return res.status(400).json({ error: "All fields are required" });
   }
+
+  // Check if user already exists
+  const existingUser = users.find((u) => u.email === email);
+  if (existingUser) {
+    return res.status(400).json({ error: "Email already registered" });
+  }
+
+  const newUser = { name, email, password, plan };
+  users.push(newUser);
+  console.log("📩 New user registration:", newUser);
+
+  res.status(201).json({ message: "User registered successfully!" });
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// ✅ Login endpoint
+app.post("/login", (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ error: "Email and password are required" });
+  }
+
+  const user = users.find((u) => u.email === email && u.password === password);
+
+  if (!user) {
+    return res.status(401).json({ error: "Invalid credentials" });
+  }
+
+  console.log("🔑 Login successful:", { email });
+  res.status(200).json({ message: "Login successful!", name: user.name, email: user.email });
+});
+
+// ✅ Start server
+const PORT = 5000;
+app.listen(PORT, () =>
+  console.log(`🚀 Server running on http://localhost:${PORT}`)
+);
