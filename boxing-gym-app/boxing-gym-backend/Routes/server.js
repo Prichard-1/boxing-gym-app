@@ -1,4 +1,3 @@
-// server.js
 import express from "express";
 import Stripe from "stripe";
 import cors from "cors";
@@ -57,7 +56,7 @@ app.post("/login", (req, res) => {
     name: user.name,
     email: user.email,
     plan: user.plan,
-    role: user.role, // ✅ Include role
+    role: user.role,
   });
 });
 
@@ -151,8 +150,11 @@ app.post("/create-checkout-session", async (req, res) => {
   }
 });
 
+// 🧍 Admin: Get all users
+app.get("/users", (req, res) => {
+  res.json(users);
+});
+
+// 🚀 Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
-
-
-

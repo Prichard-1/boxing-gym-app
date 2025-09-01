@@ -6,6 +6,8 @@ import "react-toastify/dist/ReactToastify.css";
 // Components
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import ReportsPage from "./pages/ReportsPage";
+import RoleGuard from "./components/RoleGuard";
 
 // Pages
 import Home from "./pages/Home";
@@ -21,96 +23,43 @@ import Bookings from "./pages/Bookings.jsx";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Success from "./pages/Success";
 
-// Stripe Components (if needed)
-import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
-import BookingCheckout from "./pages/BookingCheckout.jsx";
-import TestStripe from "./components/TestStripe";
-
-const stripePromise = loadStripe("YOUR_STRIPE_KEY_HERE");
-
-function App() {
+export default function App() {
   const [user, setUser] = useState(null);
 
-  // Load user from localStorage
-  useEffect(() => {
-    const email = localStorage.getItem("email");
-    if (!email) return;
-
-    fetch(`http://localhost:5000/profile?email=${email}`)
-      .then((res) => res.json())
-      .then((data) => setUser(data))
-      .catch((err) => console.error("Error fetching user:", err));
-  }, []);
-
   return (
-    <div
-      className="min-h-screen flex flex-col bg-cover bg-center bg-fixed"
-      style={{
-        backgroundImage: "url('https://share.google/images/xVe0HZgCe4zF7vPLe')",
-      }}
-    >
+    <>
       <Navbar user={user} setUser={setUser} />
+      <ToastContainer />
 
-      <main className="flex-grow max-w-6xl mx-auto w-full px-6 py-10">
-        <Routes>
-          {/* Public pages */}
-          <Route path="/" element={<Home />} />
-          <Route path="/hero" element={<Hero />} />
-          <Route path="/login" element={<Login setUser={setUser} />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contacts" element={<Contacts />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/workout" element={<Workout />} />
-          <Route path="/success" element={<Success />} />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/hero" element={<Hero />} />
+        <Route path="/login" element={<Login setUser={setUser} />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contacts />} />
+        <Route path="/workouts" element={<Workout />} />
+        <Route path="/profile" element={<UserProfile user={user} />} />
+        <Route path="/dashboard" element={<Dashboard user={user} setUser={setUser} />} />
+        <Route path="/bookings" element={<Bookings user={user} />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/success" element={<Success />} />
 
-          {/* Protected pages */}
-          <Route
-            path="/dashboard"
-            element={user ? <Dashboard user={user} setUser={setUser} /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/userprofile"
-            element={user ? <UserProfile user={user} /> : <Navigate to="/login" />}
-          />
+        {/* Protected admin route */}
+        <Route
+          path="/admin/reports"
+          element={
+            <RoleGuard user={user} allowedRoles={["admin"]}>
+              <ReportsPage />
+            </RoleGuard>
+          }
+        />
 
-          {/* Bookings */}
-          <Route
-            path="/bookings"
-            element={user ? <Bookings user={user} setUser={setUser} /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/booking"
-            element={user ? <Bookings user={user} setUser={setUser} /> : <Navigate to="/login" />}
-          />
-
-          {/* Stripe Checkout */}
-          <Route
-            path="/checkout"
-            element={
-              user ? (
-                <Elements stripe={stripePromise}>
-                  <BookingCheckout user={user} />
-                </Elements>
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          />
-
-          {/* Test Stripe */}
-          <Route path="/test-stripe" element={<TestStripe />} />
-
-          {/* Catch-all */}
-          <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
-      </main>
+        {/* Fallback */}
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
 
       <Footer />
-      <ToastContainer position="top-right" autoClose={3000} />
-    </div>
+    </>
   );
 }
-
-export default App;
