@@ -20,22 +20,18 @@ export default function Login({ setUser }) {
         password,
       });
 
-      console.log("Login response:", res.data);
-
-      // Save email to localStorage for profile fetch
       localStorage.setItem("email", res.data.email);
 
-      // Update App state
       setUser({
         name: res.data.name,
         email: res.data.email,
         plan: res.data.plan,
+        role: res.data.role, // ✅ Added
       });
 
       toast.success("Login successful!");
       navigate("/dashboard");
     } catch (err) {
-      console.error("Login error:", err);
       toast.error(err.response?.data?.error || "Login failed");
     }
   };
@@ -69,3 +65,4 @@ export default function Login({ setUser }) {
     </div>
   );
 }
+
