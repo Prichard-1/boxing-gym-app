@@ -1,62 +1,55 @@
 // src/pages/Plans.jsx
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
-// Example images: put your images in public/images/plans/
-const plans = [
-  {
-    title: "Basic Plan",
-    price: "$20/month",
-    benefits: ["Access to gym equipment", "1 group class/week", "Community support"],
-    image: "/images/basic-plan.jpg",
-  },
-  {
-    title: "Pro Plan",
-    price: "$50/month",
-    benefits: ["All Basic benefits", "3 group classes/week", "Personal training session"],
-    image: "/images/pro-plan.jpg",
-  },
-  {
-    title: "Elite Plan",
-    price: "$80/month",
-    benefits: ["All Pro benefits", "Unlimited classes", "Personal coaching", "Nutrition guide"],
-    image: "/images/elite-plan.jpg",
-  },
-];
+export default function Plans({ user }) {
+  const navigate = useNavigate();
 
-export default function Plans() {
+  if (!user) return <p className="text-center mt-10 text-red-500">Please log in first.</p>;
+
+  const plans = [
+    {
+      name: "Basic",
+      price: "$20/month",
+      description: "Access to 1 session per week",
+    },
+    {
+      name: "Premium",
+      price: "$50/month",
+      description: "Access to unlimited sessions and premium classes",
+    },
+  ];
+
+  const handleSelectPlan = (planName) => {
+    // Save membership plan in localStorage
+    localStorage.setItem("membershipPlan", planName);
+    toast.success(`✅ You selected the ${planName} plan!`);
+    navigate("/bookings"); // Redirect to bookings page
+  };
+
   return (
-    <section className="min-h-screen py-20 bg-white/70 backdrop-blur-md rounded-2xl shadow-2xl mx-6 my-10 p-8">
-      <h1 className="text-4xl font-bold mb-12 text-center">Our Plans</h1>
+    <div className="min-h-screen flex flex-col items-center bg-gray-900 text-white py-10">
+      <h1 className="text-4xl font-bold mb-10">Choose Your Membership Plan</h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {plans.map((plan, index) => (
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl w-full">
+        {plans.map((plan) => (
           <div
-            key={index}
-            className="bg-white shadow-2xl rounded-2xl overflow-hidden transform hover:scale-105 transition-transform duration-300"
+            key={plan.name}
+            className="bg-gray-800 p-6 rounded-xl shadow-lg flex flex-col justify-between"
           >
-            <img
-              src={plan.image}
-              alt={plan.title}
-              className="w-full h-48 object-cover"
-            />
-            <div className="p-6 text-center">
-              <h2 className="text-2xl font-bold mb-4">{plan.title}</h2>
-              <p className="text-xl text-gray-700 mb-4">{plan.price}</p>
-              <ul className="text-gray-600 mb-6">
-                {plan.benefits.map((benefit, i) => (
-                  <li key={i} className="mb-2">• {benefit}</li>
-                ))}
-              </ul>
-              <a
-                href="/register"
-                className="bg-red-600 text-white px-6 py-3 rounded-lg font-semibold shadow hover:bg-red-700 transition-colors"
-              >
-                Choose Plan
-              </a>
-            </div>
+            <h2 className="text-2xl font-bold mb-2">{plan.name}</h2>
+            <p className="text-gray-300 mb-4">{plan.description}</p>
+            <p className="text-xl font-semibold mb-4">{plan.price}</p>
+            <button
+              onClick={() => handleSelectPlan(plan.name)}
+              className="bg-red-600 hover:bg-red-700 py-2 px-4 rounded-lg font-semibold transition-colors"
+            >
+              Select Plan
+            </button>
           </div>
         ))}
       </div>
-    </section>
+    </div>
   );
 }

@@ -1,72 +1,97 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { loadStripe } from "@stripe/stripe-js";
+import toast, { Toaster } from "react-hot-toast";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
-const stripePromise = loadStripe("pk_test_51RzOqERrSQNJ6TlIT1e6XIcgh3PCnC1W6G64QqV6mlen4K3nSqOc232Zda8bRXDftV");
-
-export default function BookingPage() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+export default function Bookings({ user, setUser }) {
+  const [session, setSession] = useState("");
   const [date, setDate] = useState("");
-  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [bookings, setBookings] = useState([]);
 
-  const handleBooking = async (e) => {
-    e.preventDefault();
-    if (!date) {
-      setMessage("Please select a date");
-      return;
-    }
+  useEffect(() => {
+    fetchBookings();
+  }, [user]);
 
+  const fetchBookings = async () => {
+    if (!user) return;
     try {
-      const res = await axios.post("http://localhost:5000/api/create-booking", {
-        name,
-        email,
-        date,
-      });
-
-      const stripe = await stripePromise;
-      await stripe.redirectToCheckout({ sessionId: res.data.id });
+      const res = await axios.get("http://localhost:5000/bookings");
+      const userBookings = res.data.filter((b) => b.user.email === user.email);
+      setBookings(userBookings);
     } catch (err) {
       console.error(err);
-      setMessage("Error processing payment. Try again.");
     }
   };
 
+  const handleBooking = async () => {
+    if (!session || !date) {
+      toast.error("Please select a session and date");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const bookingData = { user: { name: user.name, email: user.email }, session, date, status: "confirmed" };
+      await axios.post("http://localhost:5000/bookings", bookingData);
+      toast.success("Booking confirmed!");
+      setSession("");
+      setDate("");
+      fetchBookings();
+    } catch (err) {
+      console.error(err);
+      toast.error("Error saving booking");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (!user) return <p className="text-center mt-10 text-red-500">Please log in to book a session.</p>;
+
   return (
-    <div className="max-w-xl mx-auto p-6 bg-white shadow-lg rounded-lg mt-10">
-      <h2 className="text-2xl font-bold mb-4 text-center">Book a Session</h2>
-      <form onSubmit={handleBooking} className="space-y-4">
-        <input
-          type="text"
-          placeholder="Full Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-          className="w-full p-2 border rounded"
-        />
-        <input
-          type="email"
-          placeholder="Email Address"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          className="w-full p-2 border rounded"
-        />
-        <input
-          type="date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-          required
-          className="w-full p-2 border rounded"
-        />
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
-        >
-          Book & Pay
-        </button>
-      </form>
-      {message && <p className="mt-4 text-red-600 font-medium">{message}</p>}
+    <div className="min-h-screen flex flex-col">
+      <Navbar user={user} setUser={setUser} />
+      <main className="flex-grow max-w-3xl mx-auto w-full px-6 py-10">
+        <Toaster position="top-center" />
+        <h2 className="text-3xl font-bold mb-6 text-center">Book a Session</h2>
+
+        <div className="space-y-4">
+          <input
+            type="text"
+            placeholder="Session Type"
+            className="w-full p-3 rounded-lg border border-gray-600"
+            value={session}
+            onChange={(e) => setSession(e.target.value)}
+          />
+          <input
+            type="date"
+            className="w-full p-3 rounded-lg border border-gray-600"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+          />
+          <button onClick={handleBooking} disabled={loading} className="w-full bg-red-600 py-3 rounded-lg text-white">
+            {loading ? "Saving..." : "Confirm Booking"}
+          </button>
+        </div>
+
+        <div className="mt-8">
+          <h3 className="text-2xl font-bold mb-4">My Bookings</h3>
+          {bookings.length === 0 ? (
+            <p>No bookings yet.</p>
+          ) : (
+            <ul>
+              {bookings.map((b, i) => (
+                <li key={i}>
+                  {b.session} - {b.date} ({b.status})
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </main>
+      <Footer />
     </div>
   );
 }
+

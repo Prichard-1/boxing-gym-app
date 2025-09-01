@@ -1,74 +1,71 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
 
-function Login() {
+export default function Login({ setUser }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
-    e.preventDefault();
+  const handleLogin = async () => {
+    if (!email || !password) {
+      toast.error("Please enter email and password");
+      return;
+    }
 
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    if (
-      storedUser &&
-      storedUser.email === email &&
-      storedUser.password === password
-    ) {
-      alert("Login successful");
+    try {
+      const res = await axios.post("http://localhost:5000/login", {
+        email,
+        password,
+      });
+
+      console.log("Login response:", res.data);
+
+      // Save email to localStorage for profile fetch
+      localStorage.setItem("email", res.data.email);
+
+      // Update App state
+      setUser({
+        name: res.data.name,
+        email: res.data.email,
+        plan: res.data.plan,
+      });
+
+      toast.success("Login successful!");
       navigate("/dashboard");
-    } else {
-      alert("Invalid credentials");
+    } catch (err) {
+      console.error("Login error:", err);
+      toast.error(err.response?.data?.error || "Login failed");
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
-      <div className="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
+    <div className="max-w-md mx-auto mt-20 p-8 bg-gray-900 text-white rounded-xl">
+      <Toaster position="top-center" />
+      <h1 className="text-2xl font-bold mb-6 text-center">Login</h1>
 
-        <form onSubmit={handleLogin} className="space-y-4">
-          <div>
-            <label className="block text-gray-700 text-sm mb-1">Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
-              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
-              required
-            />
-          </div>
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        className="w-full p-3 rounded mb-4 text-black"
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        className="w-full p-3 rounded mb-4 text-black"
+      />
 
-          <div>
-            <label className="block text-gray-700 text-sm mb-1">Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
-              required
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition"
-          >
-            Login
-          </button>
-        </form>
-
-        <p className="mt-4 text-center text-sm">
-          Don't have an account?{" "}
-          <Link to="/SignUp" className="text-blue-600 hover:underline">
-            Register here
-          </Link>
-        </p>
-      </div>
+      <button
+        onClick={handleLogin}
+        className="w-full py-3 bg-red-600 hover:bg-red-700 rounded font-semibold"
+      >
+        Login
+      </button>
     </div>
   );
 }
-
-export default Login;

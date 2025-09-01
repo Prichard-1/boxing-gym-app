@@ -1,55 +1,34 @@
+// server.js
 import express from "express";
 import Stripe from "stripe";
-import dotenv from "dotenv";
 import cors from "cors";
+import dotenv from "dotenv";
 
 dotenv.config();
 
 const app = express();
 app.use(express.json());
-
 app.use(
   cors({
     origin: "http://localhost:5173",
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "PUT"],
     credentials: true,
   })
 );
 
-// ✅ Initialize Stripe
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-// ✅ In-memory user store
-let users = [];
+// 🧠 In-memory stores
+const users = [];
+let bookings = [];
 
-// ✅ Payment intent endpoint
-app.post("/create-payment-intent", async (req, res) => {
-  try {
-    const { amount } = req.body;
-    if (!amount) return res.status(400).json({ error: "Missing amount" });
-
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount,
-      currency: "usd",
-      automatic_payment_methods: { enabled: true },
-    });
-
-    res.json({ clientSecret: paymentIntent.client_secret });
-  } catch (error) {
-    console.error("Stripe error:", error);
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// ✅ Registration endpoint
+// 🔐 Registration
 app.post("/register", (req, res) => {
   const { name, email, password, plan } = req.body;
-
   if (!name || !email || !password) {
     return res.status(400).json({ error: "All fields are required" });
   }
 
-  // Check if user already exists
   const existingUser = users.find((u) => u.email === email);
   if (existingUser) {
     return res.status(400).json({ error: "Email already registered" });
@@ -58,30 +37,132 @@ app.post("/register", (req, res) => {
   const newUser = { name, email, password, plan };
   users.push(newUser);
   console.log("📩 New user registration:", newUser);
-
   res.status(201).json({ message: "User registered successfully!" });
 });
 
-// ✅ Login endpoint
+// 🔑 Login
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
-
   if (!email || !password) {
     return res.status(400).json({ error: "Email and password are required" });
   }
 
   const user = users.find((u) => u.email === email && u.password === password);
-
   if (!user) {
     return res.status(401).json({ error: "Invalid credentials" });
   }
 
   console.log("🔑 Login successful:", { email });
-  res.status(200).json({ message: "Login successful!", name: user.name, email: user.email });
+  res.status(200).json({
+    message: "Login successful!",
+    name: user.name,
+    email: user.email,
+    plan: user.plan,
+  });
 });
 
-// ✅ Start server
-const PORT = 5000;
+// 📅 Bookings
+app.post("/bookings", (req, res) => {
+  const { user, session, date, status } = req.body;
+  if (!user || !session || !date) {
+    return res.status(400).json({ error: "Missing booking info" });
+  }
+
+  const newBooking = { user, session, date, status };
+  bookings.push(newBooking);
+  console.log("📅 New booking:", newBooking);
+  res.status(201).json({ message: "Booking saved successfully!" });
+});
+
+app.get("/bookings", (req, res) => {
+  res.json(bookings);
+});
+
+// 👤 Profile
+app.get("/profile", (req, res) => {
+  const email = req.query.email;
+  if (!email) return res.status(400).json({ error: "Email is required" });
+
+  const user = users.find((u) => u.email === email);
+  if (!user) return res.status(404).json({ error: "User not found" });
+
+  const userBookings = bookings.filter((b) => b.user.email === email);
+  res.json({
+    name: user.name,
+    email: user.email,
+    plan: user.plan,
+    bookings: userBookings,
+  });
+});
+
+app.put("/profile", (req, res) => {
+  const { email, name, plan } = req.body;
+  if (!email) return res.status(400).json({ error: "Email is required" });
+
+  const userIndex = users.findIndex((u) => u.email === email);
+  if (userIndex === -1) return res.status(404).json({ error: "User not found" });
+
+  if (name) users[userIndex].name = name;
+  if (plan) users[userIndex].plan = plan;
+
+  console.log("✏️ User profile updated:", users[userIndex]);
+  res.json({ message: "Profile updated successfully", user: users[userIndex] });
+});
+
+// 💳 Stripe Payment Intent (one-time)
+app.post("/create-payment-intent", async (req, res) => {
+  const { amount, email } = req.body;
+  if (!amount || !email) {
+    return res.status(400).json({ error: "Missing amount or email" });
+  }
+
+  try {
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount,
+      currency: "usd",
+      receipt_email: email,
+    });
+
+    res.json({ clientSecret: paymentIntent.client_secret });
+  } catch (err) {
+    console.error("Stripe error:", err);
+    res.status(500).json({ error: "Payment failed" });
+  }
+});
+
+// 🧾 Stripe Subscription Checkout
+app.post("/create-checkout-session", async (req, res) => {
+  const { planId } = req.body;
+
+  const prices = {
+    basic: "price_1XYZ...",
+    pro: "price_2XYZ...",
+    premium: "price_3XYZ...",
+  };
+
+  const selectedPrice = prices[planId];
+  if (!selectedPrice) {
+    return res.status(400).json({ error: "Invalid plan ID" });
+  }
+
+  try {
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      mode: "subscription",
+      line_items: [{ price: selectedPrice, quantity: 1 }],
+      success_url: `${process.env.CLIENT_URL}/dashboard?success=true`,
+      cancel_url: `${process.env.CLIENT_URL}/plans?canceled=true`,
+    });
+
+    res.json({ sessionId: session.id });
+  } catch (err) {
+    console.error("Checkout session error:", err);
+    res.status(500).json({ error: "Failed to create checkout session" });
+  }
+});
+
+// 🚀 Start server
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () =>
   console.log(`🚀 Server running on http://localhost:${PORT}`)
 );

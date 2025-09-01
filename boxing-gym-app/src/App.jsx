@@ -1,52 +1,85 @@
-import { Routes, Route } from "react-router-dom";
-import Hero from "./pages/Hero";
+import React, { useState, useEffect } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+// Components
 import Navbar from "./components/Navbar";
-import Dashboard from "./pages/Dashboard";
+import Footer from "./components/Footer";
+import BookingCheckout from "./pages/BookingCheckout";
+import TestStripe from "./components/TestStripe";
+
+// Pages
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import SignUp from "./pages/SignUp";
-import Contacts from "./pages/Contacts";
-import Plans from "./pages/Plans";
-import Booking from "./pages/Bookings";
-import TestStripe from "./components/TestStripe";
-import Success from "./pages/Success";
-import Footer from "./components/Footer";
-import About from "./pages/About";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
-import Workout from "./pages/Workout";
+import Register from "./pages/Register";
+import Dashboard from "./pages/Dashboard";
+
+import Bookings from "./pages/Bookings.jsx";
+
+// Stripe
+const stripePromise = loadStripe("YOUR_STRIPE_KEY_HERE");
 
 function App() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const email = localStorage.getItem("email");
+    if (!email) return;
+
+    fetch(`http://localhost:5000/profile?email=${email}`)
+      .then((res) => res.json())
+      .then((data) => setUser(data))
+      .catch((err) => console.error(err));
+  }, []);
+
   return (
-    <div
-      className="min-h-screen flex flex-col bg-cover bg-center bg-fixed"
-      style={{ backgroundImage: "url('https://share.google/images/xVe0HZgCe4zF7vPLe')" }}
-    >
-      {/* Navbar */}
-      <Navbar />
+    <div className="min-h-screen flex flex-col">
+      <Navbar user={user} setUser={setUser} />
+      <main className="flex-grow p-6 bg-gray-100">
+        <Routes>
+          {/* Public Pages */}
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login setUser={setUser} />} />
+          <Route path="/register" element={<Register />} />
 
-      {/* Main content with glassmorphism */}
-      <main className="flex-grow max-w-6xl mx-auto w-full px-6 py-10">
-        <div className="bg-white/70 backdrop-blur-md shadow-2xl rounded-2xl p-8">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/hero" element={<Hero />} />
-            <Route path="/register" element={<SignUp />} />
-            <Route path="/contact" element={<Contacts />} />
-            <Route path="/plans" element={<Plans />} />
-            <Route path="/booking" element={<Booking />} />
-            <Route path="/teststripe" element={<TestStripe />} />
-            <Route path="/success" element={<Success />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/privacy" element={<PrivacyPolicy />} />
-            <Route path="/workouts" element={<Workout />} />
-          </Routes>
-        </div>
+          {/* Dashboard */}
+          <Route
+            path="/dashboard"
+            element={user ? <Dashboard user={user} /> : <Navigate to="/login" />}
+          />
+
+          {/* Booking for Members */}
+          <Route
+            path="/bookings"
+            element={user ? <Bookings user={user} setUser={setUser} /> : <Navigate to="/login" />}
+          />
+
+          {/* Stripe Checkout */}
+          <Route
+            path="/checkout"
+            element={
+              user ? (
+                <Elements stripe={stripePromise}>
+                  <BookingCheckout user={user} />
+                </Elements>
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+
+          {/* Test Stripe */}
+          <Route path="/test-stripe" element={<TestStripe />} />
+
+          {/* Catch-all */}
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
       </main>
-
-      {/* Footer */}
       <Footer />
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 }
