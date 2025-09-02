@@ -10,13 +10,13 @@ import RoleGuard from "./components/RoleGuard.jsx";
 
 // Pages
 import Home from "./pages/Home.jsx";
+import Plans from "./pages/Plans.jsx";
 import Hero from "./pages/Hero.jsx";
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 import About from "./pages/About.jsx";
-import Contact from "./pages/Contact.jsx"; // exact match
+import Contact from "./pages/Contact.jsx"; 
 import Workout from "./pages/Workout.jsx";
-import Plans from "./pages/Plans.jsx";
 import UserProfile from "./pages/UserProfile.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import Bookings from "./pages/Bookings.jsx";
