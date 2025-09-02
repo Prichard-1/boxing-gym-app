@@ -1,97 +1,130 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import toast, { Toaster } from "react-hot-toast";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+import { toast } from "react-hot-toast";
 
-export default function Bookings({ user, setUser }) {
+export default function Bookings({ user }) {
+  const [bookings, setBookings] = useState([]);
   const [session, setSession] = useState("");
   const [date, setDate] = useState("");
   const [loading, setLoading] = useState(false);
-  const [bookings, setBookings] = useState([]);
 
-  useEffect(() => {
-    fetchBookings();
-  }, [user]);
-
+  // Fetch existing bookings
   const fetchBookings = async () => {
-    if (!user) return;
     try {
-      const res = await axios.get("http://localhost:5000/bookings");
-      const userBookings = res.data.filter((b) => b.user.email === user.email);
-      setBookings(userBookings);
+      const res = await axios.get("http://localhost:5000/api/bookings");
+      const data = Array.isArray(res.data)
+        ? res.data
+        : Array.isArray(res.data.bookings)
+        ? res.data.bookings
+        : [];
+      setBookings(data);
     } catch (err) {
-      console.error(err);
+      console.error("Error fetching bookings:", err);
+      toast.error("Failed to load bookings");
+      setBookings([]);
     }
   };
 
-  const handleBooking = async () => {
+  useEffect(() => {
+    fetchBookings();
+  }, []);
+
+  // Handle new booking
+  const handleBooking = async (e) => {
+    e.preventDefault();
+
+    if (!user) {
+      toast.error("Please log in to book a session");
+      return;
+    }
+
+    if (user.role !== "member") {
+      toast.error("Only members can book sessions");
+      return;
+    }
+
     if (!session || !date) {
       toast.error("Please select a session and date");
       return;
     }
 
-    setLoading(true);
     try {
-      const bookingData = { user: { name: user.name, email: user.email }, session, date, status: "confirmed" };
-      await axios.post("http://localhost:5000/bookings", bookingData);
-      toast.success("Booking confirmed!");
+      setLoading(true);
+      const res = await axios.post("http://localhost:5000/api/bookings", {
+        user,
+        session,
+        date,
+      });
+      setBookings((prev) => [...prev, res.data]);
+      toast.success("Booking successful!");
       setSession("");
       setDate("");
-      fetchBookings();
     } catch (err) {
-      console.error(err);
-      toast.error("Error saving booking");
+      console.error("Booking error:", err);
+      toast.error("Booking failed. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  if (!user) return <p className="text-center mt-10 text-red-500">Please log in to book a session.</p>;
-
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar user={user} setUser={setUser} />
-      <main className="flex-grow max-w-3xl mx-auto w-full px-6 py-10">
-        <Toaster position="top-center" />
-        <h2 className="text-3xl font-bold mb-6 text-center">Book a Session</h2>
+    <div className="max-w-4xl mx-auto p-6 space-y-6">
+      <h1 className="text-2xl font-bold mb-4">Book a Session</h1>
 
-        <div className="space-y-4">
+      <form onSubmit={handleBooking} className="space-y-4">
+        <div>
+          <label className="block font-semibold mb-1">Session:</label>
           <input
             type="text"
-            placeholder="Session Type"
-            className="w-full p-3 rounded-lg border border-gray-600"
             value={session}
             onChange={(e) => setSession(e.target.value)}
+            placeholder="Enter session name"
+            className="border p-2 w-full rounded"
+            disabled={loading}
           />
-          <input
-            type="date"
-            className="w-full p-3 rounded-lg border border-gray-600"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-          />
-          <button onClick={handleBooking} disabled={loading} className="w-full bg-red-600 py-3 rounded-lg text-white">
-            {loading ? "Saving..." : "Confirm Booking"}
-          </button>
         </div>
 
-        <div className="mt-8">
-          <h3 className="text-2xl font-bold mb-4">My Bookings</h3>
-          {bookings.length === 0 ? (
-            <p>No bookings yet.</p>
-          ) : (
-            <ul>
-              {bookings.map((b, i) => (
-                <li key={i}>
-                  {b.session} - {b.date} ({b.status})
-                </li>
-              ))}
-            </ul>
-          )}
+        <div>
+          <label className="block font-semibold mb-1">Date:</label>
+          <input
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            className="border p-2 w-full rounded"
+            disabled={loading}
+          />
         </div>
-      </main>
-      <Footer />
+
+        <button
+          type="submit"
+          className={`bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 ${
+            loading ? "opacity-50 cursor-not-allowed" : ""
+          }`}
+          disabled={loading}
+        >
+          {loading ? "Booking..." : "Book Session"}
+        </button>
+      </form>
+
+      <hr className="my-6" />
+
+      <h2 className="text-xl font-bold mb-2">Your Bookings</h2>
+      {Array.isArray(bookings) && bookings.length > 0 ? (
+        <ul className="space-y-2">
+          {bookings.map((b, index) => (
+            <li
+              key={b.id || `${b.session}-${b.date}-${index}`}
+              className="border p-2 rounded"
+            >
+              <strong>Session:</strong> {b.session} <br />
+              <strong>Date:</strong> {b.date} <br />
+              <strong>User:</strong> {b.user?.name || b.user?.email}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No bookings yet.</p>
+      )}
     </div>
   );
 }
-

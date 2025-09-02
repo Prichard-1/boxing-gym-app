@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 function Navbar({ user, setUser }) {
   const handleLogout = () => {
-    localStorage.removeItem("email");
+    localStorage.removeItem("gymUser"); // Remove stored user
     setUser(null);
   };
 
@@ -11,7 +11,9 @@ function Navbar({ user, setUser }) {
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
         {/* Logo */}
         <Link to="/" className="flex items-center space-x-2">
-          <div className="bg-black text-white w-8 h-8 flex items-center justify-center rounded-md font-bold">BG</div>
+          <div className="bg-black text-white w-8 h-8 flex items-center justify-center rounded-md font-bold">
+            BG
+          </div>
           <span className="font-bold text-lg">BoxingGym</span>
         </Link>
 
@@ -19,10 +21,11 @@ function Navbar({ user, setUser }) {
         <nav className="hidden md:flex space-x-8 text-gray-700 font-medium">
           <Link to="/">Home</Link>
           <Link to="/workout">Workouts</Link>
-          <Link to="/bookings">Bookings</Link>
-          <Link to="/dashboard">Dashboard</Link>
+          <Link to="/plans">Plans</Link>
           <Link to="/about">About</Link>
-          <Link to="/contacts">Contact</Link>
+          <Link to="/contact">Contact</Link>
+          {user && <Link to="/dashboard">Dashboard</Link>}
+          {user && user.role === "admin" && <Link to="/admin/reports">Reports</Link>}
         </nav>
 
         {/* Auth Buttons */}
@@ -30,16 +33,21 @@ function Navbar({ user, setUser }) {
           {user ? (
             <button
               onClick={handleLogout}
-              className="bg-red-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700"
+              className="bg-gray-800 text-white px-4 py-2 rounded-lg font-semibold hover:bg-gray-700"
             >
               Logout
             </button>
           ) : (
             <>
-              <Link to="/login" className="text-gray-700 hover:text-black">Login</Link>
+              <Link
+                to="/login"
+                className="bg-black text-white px-4 py-2 rounded-lg font-semibold hover:bg-gray-800"
+              >
+                Login
+              </Link>
               <Link
                 to="/register"
-                className="bg-black text-white px-4 py-2 rounded-lg font-semibold hover:bg-gray-800"
+                className="bg-red-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700"
               >
                 Sign Up
               </Link>

@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-
+import GymManagement from "../components/GymManagement";
+import ClassScheduling from "../components/ClassScheduling";
+import Reports from "../components/Reports";
 
 export default function Dashboard({ user, setUser }) {
   if (!user) {
@@ -16,7 +18,6 @@ export default function Dashboard({ user, setUser }) {
     );
   }
 
-  // Panels defined inside Dashboard.jsx
   const MemberPanel = () => (
     <div className="space-y-6">
       <section className="bg-white p-4 rounded shadow">
@@ -56,18 +57,9 @@ export default function Dashboard({ user, setUser }) {
 
   const AdminPanel = () => (
     <div className="space-y-6">
-      <section className="bg-white p-4 rounded shadow">
-        <h2 className="font-bold text-xl mb-2">Gym Management</h2>
-        <p>Monitor membership, attendance, and revenue.</p>
-      </section>
-      <section className="bg-white p-4 rounded shadow">
-        <h2 className="font-bold text-xl mb-2">Class Scheduling</h2>
-        <p>Manage class schedules, instructors, and capacity.</p>
-      </section>
-      <section className="bg-white p-4 rounded shadow">
-        <h2 className="font-bold text-xl mb-2">Reports</h2>
-        <p>Generate reports on attendance and member engagement.</p>
-      </section>
+      <GymManagement />
+      <ClassScheduling />
+      <Reports />
     </div>
   );
 
@@ -87,12 +79,10 @@ export default function Dashboard({ user, setUser }) {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar user={user} setUser={setUser} />
-
       <main className="flex-grow max-w-6xl mx-auto w-full px-6 py-10 space-y-6">
         <h1 className="text-3xl font-bold mb-4 text-center">Welcome, {user.name}</h1>
         {renderPanel()}
       </main>
-
       <Footer />
     </div>
   );

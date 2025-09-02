@@ -1,13 +1,17 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
-export default function Register({ onRegister }) {
+export default function Register({ setUser }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [plan, setPlan] = useState("Free");
-  const [role, setRole] = useState("member"); // ✅ Default role
+  const [role, setRole] = useState("member");
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -17,23 +21,38 @@ export default function Register({ onRegister }) {
       return;
     }
 
+    setLoading(true);
+
     try {
-      const res = await axios.post("http://localhost:5000/register", {
+      const res = await axios.post("http://localhost:5000/api/register", {
         name,
         email,
         password,
         plan,
-        role, // ✅ Send role to backend
+        role,
       });
 
-      toast.success(res.data.message);
+      toast.success(res.data.message || "Registration successful!");
 
-      if (onRegister) {
-        onRegister({ name, email, plan, role }); // Optional callback
-      }
+      // Store user in state and localStorage
+      const registeredUser = res.data.user;
+      setUser(registeredUser);
+      localStorage.setItem("gymUser", JSON.stringify(registeredUser));
+
+      // Reset form
+      setName("");
+      setEmail("");
+      setPassword("");
+      setPlan("Free");
+      setRole("member");
+
+      // Redirect to dashboard
+      navigate("/dashboard");
     } catch (err) {
       console.error("Registration error:", err);
       toast.error(err.response?.data?.error || "Registration failed");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -93,9 +112,12 @@ export default function Register({ onRegister }) {
 
         <button
           type="submit"
-          className="w-full bg-red-600 hover:bg-red-700 py-3 rounded-lg font-semibold"
+          className={`w-full py-3 rounded-lg font-semibold ${
+            loading ? "bg-gray-400 cursor-not-allowed" : "bg-red-600 hover:bg-red-700"
+          }`}
+          disabled={loading}
         >
-          Register
+          {loading ? "Registering..." : "Register"}
         </button>
       </form>
     </div>
