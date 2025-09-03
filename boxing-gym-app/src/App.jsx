@@ -18,6 +18,7 @@ import  About from "./pages/About.jsx";
 import Contact from "./pages/Contact.jsx"; 
 import Workout from "./pages/Workout.jsx";
 import UserProfile from "./pages/UserProfile.jsx";
+import Success from "./pages/Success"; 
 import Dashboard from "./pages/Dashboard.jsx";
 import Bookings from "./pages/Bookings.jsx";
 import PrivacyPolicy from "./pages/PrivacyPolicy.jsx";
