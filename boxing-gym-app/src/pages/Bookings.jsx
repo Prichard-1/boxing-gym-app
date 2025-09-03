@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+<<<<<<< HEAD
 import API_BASE_URL from "../config"; 
+=======
+>>>>>>> d757d4fa7267e44559b2cb06325aea23ffc70c94
 import config from "../config";
 
 export default function Bookings({ user }) {
@@ -13,7 +16,11 @@ export default function Bookings({ user }) {
   // Fetch existing bookings
   const fetchBookings = async () => {
     try {
+<<<<<<< HEAD
       const res = await axios.get(`${API_BASE_URL}/api/bookings`);
+=======
+      const res = await axios.get(`${config.API_BASE_URL}/api/bookings`);
+>>>>>>> d757d4fa7267e44559b2cb06325aea23ffc70c94
       const data = Array.isArray(res.data)
         ? res.data
         : Array.isArray(res.data.bookings)
@@ -52,7 +59,11 @@ export default function Bookings({ user }) {
 
     try {
       setLoading(true);
+<<<<<<< HEAD
       const res = await axios.post(`${API_BASE_URL}/api/bookings`, {
+=======
+      const res = await axios.post(`${config.API_BASE_URL}/api/bookings`, {
+>>>>>>> d757d4fa7267e44559b2cb06325aea23ffc70c94
         user,
         session,
         date,
@@ -98,35 +109,4 @@ export default function Bookings({ user }) {
         </div>
 
         <button
-          type="submit"
-          className={`bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 ${
-            loading ? "opacity-50 cursor-not-allowed" : ""
-          }`}
-          disabled={loading}
-        >
-          {loading ? "Booking..." : "Book Session"}
-        </button>
-      </form>
 
-      <hr className="my-6" />
-
-      <h2 className="text-xl font-bold mb-2">Your Bookings</h2>
-      {Array.isArray(bookings) && bookings.length > 0 ? (
-        <ul className="space-y-2">
-          {bookings.map((b, index) => (
-            <li
-              key={b.id || `${b.session}-${b.date}-${index}`}
-              className="border p-2 rounded"
-            >
-              <strong>Session:</strong> {b.session} <br />
-              <strong>Date:</strong> {b.date} <br />
-              <strong>User:</strong> {b.user?.name || b.user?.email}
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No bookings yet.</p>
-      )}
-    </div>
-  );
-}
