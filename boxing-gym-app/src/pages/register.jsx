@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import API_BASE_URL from "../config";
+import config from "../config"; // <-- use config object
 
 export default function Register({ setUser }) {
   const [name, setName] = useState("");
@@ -25,7 +25,7 @@ export default function Register({ setUser }) {
     setLoading(true);
 
     try {
-      const res = await axios.post(`${API_BASE_URL}/api/register`, {
+      const res = await axios.post(`${config.API_BASE_URL}/api/register`, { // <-- updated
         name,
         email,
         password,

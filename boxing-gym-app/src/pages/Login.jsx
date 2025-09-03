@@ -1,6 +1,7 @@
+// src/pages/Login.jsx
 import { useState } from "react";
 import API_BASE_URL from "../config";
-import axios from "axios"; 
+import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
@@ -20,10 +21,7 @@ export default function Login({ setUser }) {
 
     setLoading(true);
     try {
-      const res = await axios.post(`${API_BASE_URL}/api/login`, {
-        email,
-        password,
-      });
+      const res = await axios.post(`${API_BASE_URL}/api/login`, { email, password });
 
       setUser(res.data.user);
       localStorage.setItem("gymUser", JSON.stringify(res.data.user));
@@ -66,9 +64,7 @@ export default function Login({ setUser }) {
         <button
           type="submit"
           className={`w-full py-3 rounded-lg font-semibold ${
-            loading
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-red-600 hover:bg-red-700"
+            loading ? "bg-gray-400 cursor-not-allowed" : "bg-red-600 hover:bg-red-700"
           }`}
           disabled={loading}
         >

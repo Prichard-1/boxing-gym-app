@@ -7,12 +7,15 @@ export default function Reports() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  // Use environment variable for API base URL
+  const API_BASE = import.meta.env.VITE_API_URL;
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const [membersRes, classesRes] = await Promise.all([
-          axios.get("http://localhost:5000/api/members"),
-          axios.get("http://localhost:5000/api/classes"),
+          axios.get(`${API_BASE}/members`),
+          axios.get(`${API_BASE}/classes`),
         ]);
 
         setMembers(Array.isArray(membersRes.data) ? membersRes.data : []);
@@ -26,7 +29,7 @@ export default function Reports() {
     };
 
     fetchData();
-  }, []);
+  }, [API_BASE]);
 
   if (loading) return <p>Loading reports...</p>;
   if (error) return <p className="text-red-500">{error}</p>;

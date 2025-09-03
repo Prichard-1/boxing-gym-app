@@ -8,6 +8,9 @@ export default function UserProfile() {
   const [newPlan, setNewPlan] = useState("");
   const [fitnessScaling, setFitnessScaling] = useState("Intermediate");
 
+  // Use environment variable for API base URL
+  const API_BASE = import.meta.env.VITE_API_URL;
+
   useEffect(() => {
     const fetchUserData = async () => {
       const email = localStorage.getItem("email"); // store email on login
@@ -17,25 +20,25 @@ export default function UserProfile() {
       }
 
       try {
-        const res = await axios.get(`http://localhost:5000/profile?email=${email}`);
+        const res = await axios.get(`${API_BASE}/profile?email=${email}`);
         setUser(res.data);
         setNewPlan(res.data.plan || "Free");
-        setLoading(false);
       } catch (err) {
         console.error(err);
         toast.error("Failed to load profile");
+      } finally {
         setLoading(false);
       }
     };
 
     fetchUserData();
-  }, []);
+  }, [API_BASE]);
 
   const handlePlanUpgrade = async () => {
     if (!newPlan || newPlan === user.plan) return;
 
     try {
-      const res = await axios.put("http://localhost:5000/profile", {
+      const res = await axios.put(`${API_BASE}/profile`, {
         email: user.email,
         plan: newPlan,
       });
@@ -48,7 +51,12 @@ export default function UserProfile() {
   };
 
   if (loading) return <p className="text-center mt-20 text-white">Loading...</p>;
-  if (!user) return <p className="text-center mt-20 text-red-500">User not found or not logged in.</p>;
+  if (!user)
+    return (
+      <p className="text-center mt-20 text-red-500">
+        User not found or not logged in.
+      </p>
+    );
 
   return (
     <section className="min-h-screen bg-gray-900 text-white p-8 flex flex-col items-center">
@@ -64,9 +72,15 @@ export default function UserProfile() {
           />
         </div>
 
-        <p className="mb-2"><strong>Name:</strong> {user.name}</p>
-        <p className="mb-2"><strong>Email:</strong> {user.email}</p>
-        <p className="mb-4"><strong>Current Plan:</strong> {user.plan || "Free"}</p>
+        <p className="mb-2">
+          <strong>Name:</strong> {user.name}
+        </p>
+        <p className="mb-2">
+          <strong>Email:</strong> {user.email}
+        </p>
+        <p className="mb-4">
+          <strong>Current Plan:</strong> {user.plan || "Free"}
+        </p>
 
         <div className="mb-6">
           <label className="block mb-2 font-medium">Upgrade Plan</label>
@@ -93,10 +107,19 @@ export default function UserProfile() {
           {user.bookings && user.bookings.length > 0 ? (
             <ul className="space-y-3">
               {user.bookings.map((b, i) => (
-                <li key={i} className="p-4 rounded-lg bg-gray-700 border border-gray-600">
-                  <p><strong>Session:</strong> {b.session}</p>
-                  <p><strong>Date:</strong> {b.date}</p>
-                  <p><strong>Status:</strong> {b.status}</p>
+                <li
+                  key={i}
+                  className="p-4 rounded-lg bg-gray-700 border border-gray-600"
+                >
+                  <p>
+                    <strong>Session:</strong> {b.session}
+                  </p>
+                  <p>
+                    <strong>Date:</strong> {b.date}
+                  </p>
+                  <p>
+                    <strong>Status:</strong> {b.status}
+                  </p>
                 </li>
               ))}
             </ul>

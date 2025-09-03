@@ -1,4 +1,4 @@
-// src/pages/PrivacyPolicy.jsx
+// src/pages/PrivacyPolicy.jsx// src/pages/PrivacyPolicy.jsx
 import React from "react";
 
 export default function PrivacyPolicy() {
@@ -25,7 +25,10 @@ export default function PrivacyPolicy() {
 
       <p className="text-lg md:text-xl text-center max-w-3xl">
         If you have any questions about your privacy or the handling of your
-        personal information, please <a href="/contact" className="text-blue-600 hover:underline">contact us</a>.
+        personal information, please{" "}
+        <a href="/contact" className="text-blue-600 hover:underline">
+          contact us
+        </a>.
       </p>
     </section>
   );
