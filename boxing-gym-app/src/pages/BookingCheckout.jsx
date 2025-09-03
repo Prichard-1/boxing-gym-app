@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
+import API_BASE_URL from "../config";
 
 export default function BookingCheckout({ user }) {
   const stripe = useStripe();
@@ -10,7 +11,11 @@ export default function BookingCheckout({ user }) {
   const [loading, setLoading] = useState(false);
 
   if (!user)
-    return <p className="text-center mt-10 text-red-500">Please log in to checkout.</p>;
+    return (
+      <p className="text-center mt-10 text-red-500">
+        Please log in to checkout.
+      </p>
+    );
 
   const handlePayment = async (e) => {
     e.preventDefault();
@@ -20,10 +25,13 @@ export default function BookingCheckout({ user }) {
 
     try {
       // Create payment intent on backend
-      const { data } = await axios.post("http://localhost:5000/create-payment-intent", {
-        email: user.email,
-        amount: 1000, // Example amount in cents ($10)
-      });
+      const { data } = await axios.post(
+        `${API_BASE_URL}/create-payment-intent`,
+        {
+          email: user.email,
+          amount: 1000, // Example amount in cents ($10)
+        }
+      );
 
       const clientSecret = data.clientSecret;
 
@@ -57,7 +65,10 @@ export default function BookingCheckout({ user }) {
       <h1 className="text-3xl font-bold mb-6">💳 Checkout</h1>
       <p className="mb-4">Hello, {user.name}! Enter your card details below:</p>
 
-      <form onSubmit={handlePayment} className="w-full max-w-md p-6 bg-gray-900 rounded-xl text-white space-y-4">
+      <form
+        onSubmit={handlePayment}
+        className="w-full max-w-md p-6 bg-gray-900 rounded-xl text-white space-y-4"
+      >
         <CardElement
           options={{
             style: {

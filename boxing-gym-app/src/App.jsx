@@ -21,7 +21,6 @@ import UserProfile from "./pages/UserProfile.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import Bookings from "./pages/Bookings.jsx";
 import PrivacyPolicy from "./pages/PrivacyPolicy.jsx";
-import Success from "./pages/Success.jsx";
 import ReportsPage from "./pages/ReportsPage.jsx";
 
 export default function App() {

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import API_BASE_URL from "../config"; 
+import config from "../config";
 
 export default function Bookings({ user }) {
   const [bookings, setBookings] = useState([]);
@@ -11,7 +13,7 @@ export default function Bookings({ user }) {
   // Fetch existing bookings
   const fetchBookings = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/bookings");
+      const res = await axios.get(`${API_BASE_URL}/api/bookings`);
       const data = Array.isArray(res.data)
         ? res.data
         : Array.isArray(res.data.bookings)
@@ -50,7 +52,7 @@ export default function Bookings({ user }) {
 
     try {
       setLoading(true);
-      const res = await axios.post("http://localhost:5000/api/bookings", {
+      const res = await axios.post(`${API_BASE_URL}/api/bookings`, {
         user,
         session,
         date,

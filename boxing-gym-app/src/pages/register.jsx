@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import API_BASE_URL from "../config";
 
 export default function Register({ setUser }) {
   const [name, setName] = useState("");
@@ -24,7 +25,7 @@ export default function Register({ setUser }) {
     setLoading(true);
 
     try {
-      const res = await axios.post("http://localhost:5000/api/register", {
+      const res = await axios.post(`${API_BASE_URL}/api/register`, {
         name,
         email,
         password,
@@ -34,7 +35,6 @@ export default function Register({ setUser }) {
 
       toast.success(res.data.message || "Registration successful!");
 
-      // Store user in state and localStorage
       const registeredUser = res.data.user;
       setUser(registeredUser);
       localStorage.setItem("gymUser", JSON.stringify(registeredUser));
@@ -46,7 +46,6 @@ export default function Register({ setUser }) {
       setPlan("Free");
       setRole("member");
 
-      // Redirect to dashboard
       navigate("/dashboard");
     } catch (err) {
       console.error("Registration error:", err);
@@ -113,7 +112,9 @@ export default function Register({ setUser }) {
         <button
           type="submit"
           className={`w-full py-3 rounded-lg font-semibold ${
-            loading ? "bg-gray-400 cursor-not-allowed" : "bg-red-600 hover:bg-red-700"
+            loading
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-red-600 hover:bg-red-700"
           }`}
           disabled={loading}
         >

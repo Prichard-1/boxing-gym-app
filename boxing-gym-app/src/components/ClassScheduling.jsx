@@ -1,109 +1,55 @@
+
 import { useState, useEffect } from "react";
 import axios from "axios";
-import toast, { Toaster } from "react-hot-toast";
+import API_BASE_URL from "../config";
 
 export default function ClassScheduling() {
   const [classes, setClasses] = useState([]);
   const [title, setTitle] = useState("");
   const [instructor, setInstructor] = useState("");
-  const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  // Fetch classes from backend
   useEffect(() => {
     const fetchClasses = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/classes");
+        const res = await axios.get(`${API_BASE_URL}/api/classes`);
         setClasses(Array.isArray(res.data) ? res.data : []);
       } catch (err) {
         console.error(err);
-        toast.error("Failed to fetch classes");
+        setClasses([]);
       }
     };
     fetchClasses();
   }, []);
 
-  // Add new class
   const handleAddClass = async (e) => {
     e.preventDefault();
-    if (!title || !instructor || !date || !time) {
-      toast.error("All fields are required");
-      return;
-    }
+    setError("");
+    if (!title || !instructor) return setError("Title and instructor are required");
 
-    setLoading(true);
     try {
-      const res = await axios.post("http://localhost:5000/api/classes", {
-        title,
-        instructor,
-        date,
-        time,
-      });
-
-      setClasses([...classes, res.data.class]);
-      toast.success(res.data.message);
-
+      const res = await axios.post(`${API_BASE_URL}/api/classes`, { title, instructor });
+      setClasses([...classes, res.data]);
       setTitle("");
       setInstructor("");
-      setDate("");
-      setTime("");
     } catch (err) {
-      console.error(err);
-      toast.error(err.response?.data?.error || "Failed to add class");
-    } finally {
-      setLoading(false);
+      setError(err.response?.data?.error || "Failed to add class");
     }
   };
 
   return (
-    <section className="bg-white p-4 rounded shadow max-w-md mx-auto mt-8">
-      <Toaster position="top-center" />
+    <section className="bg-white p-4 rounded shadow">
       <h2 className="font-bold text-xl mb-2">Gym Classes</h2>
-      <ul className="mb-4">
+      {error && <p className="text-red-500">{error}</p>}
+      <ul>
         {classes.map((c) => (
-          <li key={c.id}>
-            {c.title} - {c.instructor} ({c.date} @ {c.time})
-          </li>
+          <li key={c.id}>{c.title} (Instructor: {c.instructor})</li>
         ))}
       </ul>
-
-      <form onSubmit={handleAddClass} className="flex flex-col gap-2">
-        <input
-          type="text"
-          placeholder="Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="p-2 border rounded"
-        />
-        <input
-          type="text"
-          placeholder="Instructor"
-          value={instructor}
-          onChange={(e) => setInstructor(e.target.value)}
-          className="p-2 border rounded"
-        />
-        <input
-          type="date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-          className="p-2 border rounded"
-        />
-        <input
-          type="time"
-          value={time}
-          onChange={(e) => setTime(e.target.value)}
-          className="p-2 border rounded"
-        />
-        <button
-          type="submit"
-          disabled={loading}
-          className={`py-2 rounded text-white ${
-            loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
-          }`}
-        >
-          {loading ? "Adding..." : "Add Class"}
-        </button>
+      <form onSubmit={handleAddClass} className="mt-2 flex gap-2">
+        <input type="text" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} />
+        <input type="text" placeholder="Instructor" value={instructor} onChange={(e) => setInstructor(e.target.value)} />
+        <button type="submit">Add</button>
       </form>
     </section>
   );
