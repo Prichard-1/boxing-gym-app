@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import config from "../config"; // <-- use config object
+import API_BASE_URL from "../config";
 
 export default function Register({ setUser }) {
   const [name, setName] = useState("");
@@ -16,7 +16,6 @@ export default function Register({ setUser }) {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-
     if (!name || !email || !password) {
       toast.error("Please fill in all required fields");
       return;
@@ -25,7 +24,7 @@ export default function Register({ setUser }) {
     setLoading(true);
 
     try {
-      const res = await axios.post(`${config.API_BASE_URL}/api/register`, { // <-- updated
+      const res = await axios.post(`${API_BASE_URL}/api/register`, {
         name,
         email,
         password,
