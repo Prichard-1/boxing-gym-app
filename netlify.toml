@@ -1,0 +1,5 @@
+[build]
+  base = "boxing-gym-app/boxing-gym-app"
+  command = "npm run build"
+  publish = "dist"
+
