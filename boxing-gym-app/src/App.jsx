@@ -13,8 +13,8 @@ import Home from "./pages/Home.jsx";
 import Plans from "./pages/Plans.jsx";
 import Hero from "./pages/Hero.jsx";
 import Login from "./pages/Login.jsx";
-import Register from "./pages/Register.jsx";
-import About from "./pages/About.jsx";
+import Register from "./pages/register.jsx";
+import  About from "./pages/About.jsx";
 import Contact from "./pages/Contact.jsx"; 
 import Workout from "./pages/Workout.jsx";
 import UserProfile from "./pages/UserProfile.jsx";
@@ -45,7 +45,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/hero" element={<Hero />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/register" element={<Register/>} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/workout" element={<Workout />} />
