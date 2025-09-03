@@ -13,7 +13,7 @@ import Home from "./pages/Home.jsx";
 import Plans from "./pages/Plans.jsx";
 import Hero from "./pages/Hero.jsx";
 import Login from "./pages/Login.jsx";
-import Register from "./pages/register.jsx"; // ✅ Fixed import
+import Register from "./pages/register.jsx"; // ✅ Correct casing
 import About from "./pages/About.jsx";
 import Contact from "./pages/Contact.jsx";
 import Workout from "./pages/Workout.jsx";
@@ -47,6 +47,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/hero" element={<Hero />} />
         <Route path="/register" element={<Register setUser={setUser} />} />
+        <Route path="/login" element={<Login setUser={setUser} />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/workout" element={<Workout />} />
@@ -61,7 +62,6 @@ export default function App() {
         />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/success" element={<Success />} />
-        <Route path="/login" element={<Login setUser={setUser} />} />
         <Route
           path="/dashboard"
           element={user ? <Dashboard user={user} setUser={setUser} /> : <Navigate to="/login" />}

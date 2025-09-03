@@ -1,35 +1,33 @@
-// src/pages/Login.jsx
 import { useState } from "react";
-import API_BASE_URL from "../config";
 import axios from "axios";
-import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 
-export default function Login({ setUser }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+const Login = ({ setUser }) => {
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-  const handleLogin = async (e) => {
+  const handleChange = (e) => {
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email || !password) {
-      toast.error("Please fill in all fields");
-      return;
-    }
-
     setLoading(true);
+
     try {
-      const res = await axios.post(`${API_BASE_URL}/api/login`, { email, password });
+      const res = await axios.post(`${API_BASE_URL}/api/login`, formData);
+      toast.success(res.data.message || "Login successful!");
 
-      setUser(res.data.user);
-      localStorage.setItem("gymUser", JSON.stringify(res.data.user));
+      const user = res.data.user;
+      setUser(user);
+      localStorage.setItem("gymUser", JSON.stringify(user));
 
-      toast.success(res.data.message);
       navigate("/dashboard");
     } catch (err) {
-      console.error("Login error:", err);
       toast.error(err.response?.data?.error || "Login failed");
     } finally {
       setLoading(false);
@@ -37,40 +35,46 @@ export default function Login({ setUser }) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
+    <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white p-6">
       <Toaster position="top-center" />
       <form
-        onSubmit={handleLogin}
-        className="bg-gray-800 p-8 rounded-xl w-full max-w-md"
+        onSubmit={handleSubmit}
+        className="bg-gray-800 p-8 rounded-xl w-full max-w-md flex flex-col space-y-4"
       >
-        <h1 className="text-2xl font-bold mb-6 text-center">Login</h1>
+        <h2 className="text-2xl font-bold text-center">Login</h2>
 
         <input
           type="email"
+          name="email"
           placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full p-3 mb-4 rounded text-black"
+          value={formData.email}
+          onChange={handleChange}
+          className="p-3 rounded text-black"
+          required
         />
 
         <input
           type="password"
+          name="password"
           placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-3 mb-6 rounded text-black"
+          value={formData.password}
+          onChange={handleChange}
+          className="p-3 rounded text-black"
+          required
         />
 
         <button
           type="submit"
-          className={`w-full py-3 rounded-lg font-semibold ${
+          disabled={loading}
+          className={`py-3 rounded-lg font-semibold shadow transition-colors ${
             loading ? "bg-gray-400 cursor-not-allowed" : "bg-red-600 hover:bg-red-700"
           }`}
-          disabled={loading}
         >
           {loading ? "Logging in..." : "Login"}
         </button>
       </form>
     </div>
   );
-}
+};
+
+export default Login;

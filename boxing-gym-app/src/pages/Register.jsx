@@ -1,53 +1,33 @@
 import { useState } from "react";
 import axios from "axios";
-import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import API_BASE_URL from "../config";
+import toast, { Toaster } from "react-hot-toast";
 
-export default function Register({ setUser }) {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [plan, setPlan] = useState("Free");
-  const [role, setRole] = useState("member");
+const Register = ({ setUser }) => {
+  const [formData, setFormData] = useState({ name: "", email: "", password: "" });
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-  const handleRegister = async (e) => {
+  const handleChange = (e) => {
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!name || !email || !password) {
-      toast.error("Please fill in all required fields");
-      return;
-    }
-
     setLoading(true);
 
     try {
-      const res = await axios.post(`${API_BASE_URL}/api/register`, {
-        name,
-        email,
-        password,
-        plan,
-        role,
-      });
-
+      const res = await axios.post(`${API_BASE_URL}/api/register`, formData);
       toast.success(res.data.message || "Registration successful!");
 
-      const registeredUser = res.data.user;
-      setUser(registeredUser);
-      localStorage.setItem("gymUser", JSON.stringify(registeredUser));
-
-      // Reset form
-      setName("");
-      setEmail("");
-      setPassword("");
-      setPlan("Free");
-      setRole("member");
+      const user = res.data.user;
+      setUser(user);
+      localStorage.setItem("gymUser", JSON.stringify(user));
 
       navigate("/dashboard");
     } catch (err) {
-      console.error("Registration error:", err);
       toast.error(err.response?.data?.error || "Registration failed");
     } finally {
       setLoading(false);
@@ -55,71 +35,56 @@ export default function Register({ setUser }) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
+    <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white p-6">
       <Toaster position="top-center" />
       <form
-        onSubmit={handleRegister}
-        className="bg-gray-800 p-8 rounded-xl w-full max-w-md"
+        onSubmit={handleSubmit}
+        className="bg-gray-800 p-8 rounded-xl w-full max-w-md flex flex-col space-y-4"
       >
-        <h1 className="text-2xl font-bold mb-6 text-center">Register</h1>
+        <h2 className="text-2xl font-bold text-center">Register</h2>
 
         <input
           type="text"
-          placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="w-full p-3 mb-4 rounded text-black"
+          name="name"
+          placeholder="Full Name"
+          value={formData.name}
+          onChange={handleChange}
+          className="p-3 rounded text-black"
+          required
         />
 
         <input
           type="email"
+          name="email"
           placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full p-3 mb-4 rounded text-black"
+          value={formData.email}
+          onChange={handleChange}
+          className="p-3 rounded text-black"
+          required
         />
 
         <input
           type="password"
+          name="password"
           placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-3 mb-4 rounded text-black"
+          value={formData.password}
+          onChange={handleChange}
+          className="p-3 rounded text-black"
+          required
         />
-
-        <select
-          value={plan}
-          onChange={(e) => setPlan(e.target.value)}
-          className="w-full p-3 mb-4 rounded text-black"
-        >
-          <option value="Free">Free</option>
-          <option value="Basic">Basic</option>
-          <option value="Pro">Pro</option>
-          <option value="Premium">Premium</option>
-        </select>
-
-        <select
-          value={role}
-          onChange={(e) => setRole(e.target.value)}
-          className="w-full p-3 mb-6 rounded text-black"
-        >
-          <option value="member">Member</option>
-          <option value="trainer">Trainer</option>
-          <option value="admin">Admin</option>
-        </select>
 
         <button
           type="submit"
-          className={`w-full py-3 rounded-lg font-semibold ${
-            loading
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-red-600 hover:bg-red-700"
-          }`}
           disabled={loading}
+          className={`py-3 rounded-lg font-semibold shadow transition-colors ${
+            loading ? "bg-gray-400 cursor-not-allowed" : "bg-red-600 hover:bg-red-700"
+          }`}
         >
           {loading ? "Registering..." : "Register"}
         </button>
       </form>
     </div>
   );
-}
+};
+
+export default Register;
