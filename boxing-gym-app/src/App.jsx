@@ -13,12 +13,12 @@ import Home from "./pages/Home.jsx";
 import Plans from "./pages/Plans.jsx";
 import Hero from "./pages/Hero.jsx";
 import Login from "./pages/Login.jsx";
-import Register from "src/pages/Register";
-import  About from "./pages/About.jsx";
-import Contact from "./pages/Contact.jsx"; 
+import Register from "./pages/register.jsx"; // ✅ Fixed import
+import About from "./pages/About.jsx";
+import Contact from "./pages/Contact.jsx";
 import Workout from "./pages/Workout.jsx";
 import UserProfile from "./pages/UserProfile.jsx";
-import Success from "./pages/Success"; 
+import Success from "./pages/Success.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import Bookings from "./pages/Bookings.jsx";
 import PrivacyPolicy from "./pages/PrivacyPolicy.jsx";
@@ -46,21 +46,36 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/hero" element={<Hero />} />
-         <Route path="/register" element={<Register setUser={setUser} />} />
+        <Route path="/register" element={<Register setUser={setUser} />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/workout" element={<Workout />} />
         <Route path="/plans" element={<Plans />} />
-        <Route path="/profile" element={user ? <UserProfile user={user} /> : <Navigate to="/login" />} />
-        <Route path="/bookings" element={user ? <Bookings user={user} /> : <Navigate to="/login" />} />
+        <Route
+          path="/profile"
+          element={user ? <UserProfile user={user} /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/bookings"
+          element={user ? <Bookings user={user} /> : <Navigate to="/login" />}
+        />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/success" element={<Success />} />
         <Route path="/login" element={<Login setUser={setUser} />} />
-        <Route path="/dashboard" element={user ? <Dashboard user={user} setUser={setUser} /> : <Navigate to="/login" />} />
-
+        <Route
+          path="/dashboard"
+          element={user ? <Dashboard user={user} setUser={setUser} /> : <Navigate to="/login" />}
+        />
 
         {/* Admin only */}
-        <Route path="/admin/reports" element={<RoleGuard user={user} allowedRoles={["admin"]}><ReportsPage /></RoleGuard>} />
+        <Route
+          path="/admin/reports"
+          element={
+            <RoleGuard user={user} allowedRoles={["admin"]}>
+              <ReportsPage />
+            </RoleGuard>
+          }
+        />
 
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" />} />
