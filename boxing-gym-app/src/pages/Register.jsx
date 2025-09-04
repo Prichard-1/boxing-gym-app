@@ -27,17 +27,19 @@ export default function Register() {
     try {
       const res = await axios.post(`${API_BASE_URL}/api/register`, formData);
 
-      toast.success("Registration successful! Redirecting...");
       console.log("Register response:", res.data);
 
-      // Save token if backend returns one later
+      toast.success("Registration successful! Redirecting...");
+
+      // Save JWT token if backend returns one
       if (res.data.token) {
         localStorage.setItem("token", res.data.token);
       }
 
+      // Redirect to user profile
       setTimeout(() => navigate("/userprofile"), 1500);
     } catch (err) {
-      console.error("Registration error:", err.response?.data || err.message);
+      console.error("Registration error:", err);
       toast.error(err.response?.data?.error || "Registration failed");
     } finally {
       setLoading(false);

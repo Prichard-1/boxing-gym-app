@@ -19,17 +19,22 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const res = await axios.post(`${API_BASE_URL}/api/login`, formData);
+      const res = await axios.post(`${API_BASE_URL}/api/login`, {
+        email: formData.email,
+        password: formData.password,
+      });
 
-      toast.success("Login successful! Redirecting...");
       console.log("Login response:", res.data);
 
-      // Save JWT token
+      // Save JWT token in localStorage
       localStorage.setItem("token", res.data.token);
 
-      setTimeout(() => navigate("/userprofile"), 1500);
+      toast.success("Login successful! Redirecting...");
+
+      // Redirect to dashboard or user profile
+      navigate("/userprofile");
     } catch (err) {
-      console.error("Login error:", err.response?.data || err.message);
+      console.error("Login error:", err);
       toast.error(err.response?.data?.error || "Login failed");
     } finally {
       setLoading(false);
