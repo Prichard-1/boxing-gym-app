@@ -14,6 +14,7 @@ import Hero from "./pages/Hero.jsx";
 import Login from "./pages/Login.jsx";
 import SignUp from "./pages/SignUp.jsx"; // renamed from Register
 import About from "./pages/About.jsx";
+import Plans from './Plans';
 import Contact from "./pages/Contact.jsx";
 import Workout from "./pages/Workout.jsx";
 import UserProfile from "./pages/UserProfile.jsx";
