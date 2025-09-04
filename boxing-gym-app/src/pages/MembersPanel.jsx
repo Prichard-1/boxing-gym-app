@@ -1,8 +1,6 @@
-// src/components/MemberPanel.jsx
-import React from "react";
 import { Link } from "react-router-dom";
 
-export function MemberPanel() {
+export default function MemberPanel() {
   return (
     <div className="space-y-6">
       <section className="bg-white p-4 rounded shadow">
@@ -28,3 +26,4 @@ export function MemberPanel() {
     </div>
   );
 }
+

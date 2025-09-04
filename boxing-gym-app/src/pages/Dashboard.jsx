@@ -1,72 +1,11 @@
 // src/pages/Dashboard.jsx
-import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import GymManagement from "../components/GymManagement";
-import ClassScheduling from "../components/ClassScheduling";
-import Reports from "../components/Reports";
+import MemberPanel from "../components/panels/MemberPanel";
+import TrainerPanel from "../components/panels/TrainerPanel";
+import AdminPanel from "../components/panels/AdminPanel";
 
 export default function Dashboard({ user, setUser }) {
-  if (!user) {
-    return (
-      <div className="min-h-screen flex flex-col">
-        <Navbar user={user} setUser={setUser} />
-        <main className="flex-grow flex items-center justify-center">
-          <p className="text-red-500 text-xl">Please log in to access the dashboard.</p>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
-
-  const MemberPanel = () => (
-    <div className="space-y-6">
-      <section className="bg-white p-4 rounded shadow">
-        <h2 className="font-bold text-xl mb-2">My Workouts</h2>
-        <p>Track your workout history, sets, reps, and progress.</p>
-      </section>
-      <section className="bg-white p-4 rounded shadow">
-        <h2 className="font-bold text-xl mb-2">My Schedule</h2>
-        <p>View upcoming classes or personal training sessions.</p>
-        <Link
-          to="/bookings"
-          className="mt-2 inline-block text-red-600 font-semibold hover:underline"
-        >
-          Book a Session
-        </Link>
-      </section>
-      <section className="bg-white p-4 rounded shadow">
-        <h2 className="font-bold text-xl mb-2">Progress</h2>
-        <p>Track fitness goals, weight, and body metrics.</p>
-      </section>
-    </div>
-  );
-
-  const TrainerPanel = () => (
-    <div className="space-y-6">
-      <section className="bg-white p-4 rounded shadow">
-        <h2 className="font-bold text-xl mb-2">Client Management</h2>
-        <p>View client profiles, workouts, and progress.</p>
-      </section>
-      <section className="bg-white p-4 rounded shadow">
-        <h2 className="font-bold text-xl mb-2">Schedule Management</h2>
-        <p>Manage upcoming sessions and classes.</p>
-      </section>
-      <section className="bg-white p-4 rounded shadow">
-        <h2 className="font-bold text-xl mb-2">Workout Planning</h2>
-        <p>Create and assign custom workout plans for clients.</p>
-      </section>
-    </div>
-  );
-
-  const AdminPanel = () => (
-    <div className="space-y-6">
-      <GymManagement />
-      <ClassScheduling />
-      <Reports />
-    </div>
-  );
-
   const renderPanel = () => {
     switch (user.role) {
       case "member":
@@ -76,7 +15,7 @@ export default function Dashboard({ user, setUser }) {
       case "admin":
         return <AdminPanel />;
       default:
-        return <p>User role not recognized.</p>;
+        return null; // ProtectedRoute prevents invalid roles from reaching here
     }
   };
 
@@ -84,7 +23,9 @@ export default function Dashboard({ user, setUser }) {
     <div className="min-h-screen flex flex-col">
       <Navbar user={user} setUser={setUser} />
       <main className="flex-grow max-w-6xl mx-auto w-full px-6 py-10 space-y-6">
-        <h1 className="text-3xl font-bold mb-4 text-center">Welcome, {user.name}</h1>
+        <h1 className="text-3xl font-bold mb-4 text-center">
+          Welcome, {user.name}
+        </h1>
         {renderPanel()}
       </main>
       <Footer />
