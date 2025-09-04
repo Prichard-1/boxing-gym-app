@@ -3,15 +3,15 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 
-const Login = ({ setUser }) => {
+export default function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
   const handleChange = (e) => {
-    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
@@ -20,14 +20,16 @@ const Login = ({ setUser }) => {
 
     try {
       const res = await axios.post(`${API_BASE_URL}/api/login`, formData);
-      toast.success(res.data.message || "Login successful!");
 
-      const user = res.data.user;
-      setUser(user);
-      localStorage.setItem("gymUser", JSON.stringify(user));
+      toast.success("Login successful! Redirecting...");
+      console.log("Login response:", res.data);
 
-      navigate("/dashboard");
+      // Save JWT token
+      localStorage.setItem("token", res.data.token);
+
+      setTimeout(() => navigate("/userprofile"), 1500);
     } catch (err) {
+      console.error("Login error:", err.response?.data || err.message);
       toast.error(err.response?.data?.error || "Login failed");
     } finally {
       setLoading(false);
@@ -35,21 +37,21 @@ const Login = ({ setUser }) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white p-6">
-      <Toaster position="top-center" />
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <Toaster position="top-right" />
       <form
         onSubmit={handleSubmit}
-        className="bg-gray-800 p-8 rounded-xl w-full max-w-md flex flex-col space-y-4"
+        className="bg-white shadow-lg rounded-2xl p-6 w-full max-w-md"
       >
-        <h2 className="text-2xl font-bold text-center">Login</h2>
+        <h2 className="text-2xl font-bold mb-4">Login</h2>
 
         <input
           type="email"
           name="email"
           placeholder="Email"
+          className="w-full p-2 border rounded mb-3"
           value={formData.email}
           onChange={handleChange}
-          className="p-3 rounded text-black"
           required
         />
 
@@ -57,24 +59,20 @@ const Login = ({ setUser }) => {
           type="password"
           name="password"
           placeholder="Password"
+          className="w-full p-2 border rounded mb-3"
           value={formData.password}
           onChange={handleChange}
-          className="p-3 rounded text-black"
           required
         />
 
         <button
           type="submit"
           disabled={loading}
-          className={`py-3 rounded-lg font-semibold shadow transition-colors ${
-            loading ? "bg-gray-400 cursor-not-allowed" : "bg-red-600 hover:bg-red-700"
-          }`}
+          className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600 disabled:opacity-50"
         >
           {loading ? "Logging in..." : "Login"}
         </button>
       </form>
     </div>
   );
-};
-
-export default Login;
+}
