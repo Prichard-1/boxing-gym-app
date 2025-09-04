@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-export default function Register({ setUser }) {
+export default function SignUp({ setUser }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleRegister = (e) => {
+  const handleSignUp = (e) => {
     e.preventDefault();
 
     if (!name || !email || !password) {
@@ -16,10 +16,10 @@ export default function Register({ setUser }) {
       return;
     }
 
-    // Load users from localStorage or create empty array
+    // Load existing users or initialize empty array
     const users = JSON.parse(localStorage.getItem("users") || "[]");
 
-    // Check if email already exists
+    // Check if user already exists
     if (users.some((u) => u.email === email)) {
       toast.error("User with this email already exists");
       return;
@@ -30,17 +30,17 @@ export default function Register({ setUser }) {
     users.push(newUser);
     localStorage.setItem("users", JSON.stringify(users));
 
-    // Set user in app state and localStorage
+    // Set user in app state & localStorage
     setUser(newUser);
     localStorage.setItem("gymUser", JSON.stringify(newUser));
 
-    toast.success("Registration successful!");
+    toast.success("Sign up successful!");
     navigate("/dashboard");
   };
 
   return (
     <form
-      onSubmit={handleRegister}
+      onSubmit={handleSignUp}
       className="max-w-md mx-auto mt-10 p-4 border rounded shadow"
     >
       <input
@@ -68,9 +68,8 @@ export default function Register({ setUser }) {
         type="submit"
         className="w-full p-2 bg-blue-600 text-white rounded hover:scale-105 transform transition-transform duration-300"
       >
-        Register
+        Sign Up
       </button>
     </form>
   );
 }
-

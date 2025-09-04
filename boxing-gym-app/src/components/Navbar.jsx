@@ -46,7 +46,7 @@ function Navbar({ user, setUser }) {
                 Login
               </Link>
               <Link
-                to="/register"
+                to="/signup"  // ✅ updated to SignUp route
                 className="bg-red-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700"
               >
                 Sign Up
@@ -60,4 +60,5 @@ function Navbar({ user, setUser }) {
 }
 
 export default Navbar;
+
 

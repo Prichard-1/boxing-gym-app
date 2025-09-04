@@ -8,12 +8,12 @@ import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
 import RoleGuard from "./components/RoleGuard.jsx";
 
-// Pages
+// Pages (case-sensitive)
 import Home from "./pages/Home.jsx";
 import Plans from "./pages/Plans.jsx";
 import Hero from "./pages/Hero.jsx";
 import Login from "./pages/Login.jsx";
-import Register from "./pages/Register.jsx";
+import SignUp from "./pages/SignUp.jsx"; // ✅ replaced Register
 import About from "./pages/About.jsx";
 import Contact from "./pages/Contact.jsx";
 import Workout from "./pages/Workout.jsx";
@@ -26,11 +26,9 @@ import ReportsPage from "./pages/ReportsPage.jsx";
 
 export default function App() {
   const [user, setUser] = useState(() => {
-    // Load logged-in user from localStorage on app start
     return JSON.parse(localStorage.getItem("gymUser")) || null;
   });
 
-  // Persist login state in localStorage whenever user changes
   useEffect(() => {
     if (user) {
       localStorage.setItem("gymUser", JSON.stringify(user));
@@ -56,10 +54,10 @@ export default function App() {
         <Route path="/success" element={<Success />} />
 
         {/* Auth Pages */}
-        <Route path="/register" element={<Register setUser={setUser} />} />
+        <Route path="/signup" element={<SignUp setUser={setUser} />} /> {/* ✅ updated */}
         <Route path="/login" element={<Login setUser={setUser} />} />
 
-        {/* Protected Pages (logged-in users only) */}
+        {/* Protected Pages */}
         <Route
           path="/profile"
           element={user ? <UserProfile user={user} /> : <Navigate to="/login" />}
@@ -73,7 +71,7 @@ export default function App() {
           element={user ? <Dashboard user={user} setUser={setUser} /> : <Navigate to="/login" />}
         />
 
-        {/* Admin only pages */}
+        {/* Admin only */}
         <Route
           path="/admin/reports"
           element={
@@ -91,4 +89,3 @@ export default function App() {
     </>
   );
 }
-
