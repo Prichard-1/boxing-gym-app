@@ -5,6 +5,7 @@ import MemberPanel from "../components/panels/MemberPanel";
 import TrainerPanel from "../components/panels/TrainerPanel";
 import AdminPanel from "../components/panels/AdminPanel";
 
+
 export default function Dashboard({ user, setUser }) {
   const renderPanel = () => {
     switch (user.role) {
