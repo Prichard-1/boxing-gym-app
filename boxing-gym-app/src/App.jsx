@@ -13,7 +13,7 @@ import Home from "./pages/Home.jsx";
 import Plans from "./pages/Plans.jsx";
 import Hero from "./pages/Hero.jsx";
 import Login from "./pages/Login.jsx";
-import Register from "./pages/register.jsx"; // ✅ Correct casing
+import Register from "./pagesregister.jsx";
 import About from "./pages/About.jsx";
 import Contact from "./pages/Contact.jsx";
 import Workout from "./pages/Workout.jsx";
@@ -25,17 +25,18 @@ import PrivacyPolicy from "./pages/PrivacyPolicy.jsx";
 import ReportsPage from "./pages/ReportsPage.jsx";
 
 export default function App() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    // Load logged-in user from localStorage on app start
+    return JSON.parse(localStorage.getItem("gymUser")) || null;
+  });
 
-  // Persist login state
+  // Persist login state in localStorage whenever user changes
   useEffect(() => {
-    const storedUser = localStorage.getItem("gymUser");
-    if (storedUser) setUser(JSON.parse(storedUser));
-  }, []);
-
-  useEffect(() => {
-    if (user) localStorage.setItem("gymUser", JSON.stringify(user));
-    else localStorage.removeItem("gymUser");
+    if (user) {
+      localStorage.setItem("gymUser", JSON.stringify(user));
+    } else {
+      localStorage.removeItem("gymUser");
+    }
   }, [user]);
 
   return (
@@ -44,14 +45,21 @@ export default function App() {
       <ToastContainer />
 
       <Routes>
+        {/* Public Pages */}
         <Route path="/" element={<Home />} />
         <Route path="/hero" element={<Hero />} />
-        <Route path="/register" element={<Register setUser={setUser} />} />
-        <Route path="/login" element={<Login setUser={setUser} />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/workout" element={<Workout />} />
         <Route path="/plans" element={<Plans />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/success" element={<Success />} />
+
+        {/* Auth Pages */}
+        <Route path="/register" element={<Register setUser={setUser} />} />
+        <Route path="/login" element={<Login setUser={setUser} />} />
+
+        {/* Protected Pages (logged-in users only) */}
         <Route
           path="/profile"
           element={user ? <UserProfile user={user} /> : <Navigate to="/login" />}
@@ -60,14 +68,12 @@ export default function App() {
           path="/bookings"
           element={user ? <Bookings user={user} /> : <Navigate to="/login" />}
         />
-        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-        <Route path="/success" element={<Success />} />
         <Route
           path="/dashboard"
           element={user ? <Dashboard user={user} setUser={setUser} /> : <Navigate to="/login" />}
         />
 
-        {/* Admin only */}
+        {/* Admin only pages */}
         <Route
           path="/admin/reports"
           element={
@@ -85,3 +91,4 @@ export default function App() {
     </>
   );
 }
+
