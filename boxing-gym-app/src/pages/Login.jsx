@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
 
 export default function Login({ setUser }) {
   const [email, setEmail] = useState("");
@@ -10,22 +10,35 @@ export default function Login({ setUser }) {
   const handleLogin = (e) => {
     e.preventDefault();
 
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
-    const user = users.find((u) => u.email === email && u.password === password);
-
-    if (!user) {
-      toast.error("Invalid credentials");
+    if (!email || !password) {
+      toast.error("Please fill in all fields");
       return;
     }
 
-    localStorage.setItem("gymUser", JSON.stringify(user));
+    // Load users from localStorage
+    const users = JSON.parse(localStorage.getItem("users") || "[]");
+
+    // Find matching user
+    const user = users.find((u) => u.email === email && u.password === password);
+
+    if (!user) {
+      toast.error("Invalid email or password");
+      return;
+    }
+
+    // Set user in app state and localStorage
     setUser(user);
+    localStorage.setItem("gymUser", JSON.stringify(user));
+
     toast.success(`Welcome back, ${user.name}!`);
     navigate("/dashboard");
   };
 
   return (
-    <form onSubmit={handleLogin} className="max-w-md mx-auto mt-10 p-4">
+    <form
+      onSubmit={handleLogin}
+      className="max-w-md mx-auto mt-10 p-4 border rounded shadow"
+    >
       <input
         type="email"
         placeholder="Email"
@@ -42,7 +55,7 @@ export default function Login({ setUser }) {
       />
       <button
         type="submit"
-        className="bg-green-600 text-white p-2 rounded w-full hover:scale-105 transform transition-transform duration-300"
+        className="w-full p-2 bg-green-600 text-white rounded hover:scale-105 transform transition-transform duration-300"
       >
         Login
       </button>
