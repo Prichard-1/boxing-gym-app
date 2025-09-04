@@ -13,6 +13,7 @@ import RoleGuard from "./components/RoleGuard.jsx";
 // Pages
 import Home from "./pages/Home.jsx";
 import Hero from "./pages/Hero.jsx";
+import Register from '../pages/Register';
 import Login from "./pages/Login.jsx";
 import SignUp from "./pages/SignUp.jsx";
 import About from "./pages/About.jsx";
@@ -48,6 +49,7 @@ export default function App() {
         {/* Public pages */}
         <Route path="/" element={<Home />} />
         <Route path="/hero" element={<Hero />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/workout" element={<Workout />} />
