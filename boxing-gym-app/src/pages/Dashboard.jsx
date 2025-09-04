@@ -1,12 +1,69 @@
 // src/pages/Dashboard.jsx
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import MemberPanel from "../components/panels/MemberPanel";
-import TrainerPanel from "../components/panels/TrainerPanel";
-import AdminPanel from "../components/panels/AdminPanel";
-
+import { Link } from "react-router-dom";
 
 export default function Dashboard({ user, setUser }) {
+  // Panels defined inline to avoid missing imports
+  const MemberPanel = () => (
+    <div className="space-y-6">
+      <section className="bg-white p-4 rounded shadow">
+        <h2 className="font-bold text-xl mb-2">My Workouts</h2>
+        <p>Track your workout history, sets, reps, and progress.</p>
+      </section>
+
+      <section className="bg-white p-4 rounded shadow">
+        <h2 className="font-bold text-xl mb-2">My Schedule</h2>
+        <p>View upcoming classes or personal training sessions.</p>
+        <Link
+          to="/bookings"
+          className="mt-2 inline-block text-red-600 font-semibold hover:underline"
+        >
+          Book a Session
+        </Link>
+      </section>
+
+      <section className="bg-white p-4 rounded shadow">
+        <h2 className="font-bold text-xl mb-2">Progress</h2>
+        <p>Track fitness goals, weight, and body metrics.</p>
+      </section>
+    </div>
+  );
+
+  const TrainerPanel = () => (
+    <div className="space-y-6">
+      <section className="bg-white p-4 rounded shadow">
+        <h2 className="font-bold text-xl mb-2">Client Management</h2>
+        <p>View client profiles, workouts, and progress.</p>
+      </section>
+      <section className="bg-white p-4 rounded shadow">
+        <h2 className="font-bold text-xl mb-2">Schedule Management</h2>
+        <p>Manage upcoming sessions and classes.</p>
+      </section>
+      <section className="bg-white p-4 rounded shadow">
+        <h2 className="font-bold text-xl mb-2">Workout Planning</h2>
+        <p>Create and assign custom workout plans for clients.</p>
+      </section>
+    </div>
+  );
+
+  const AdminPanel = () => (
+    <div className="space-y-6">
+      <section className="bg-white p-4 rounded shadow">
+        <h2 className="font-bold text-xl mb-2">Gym Management</h2>
+        <p>Manage gym members, trainers, and subscriptions.</p>
+      </section>
+      <section className="bg-white p-4 rounded shadow">
+        <h2 className="font-bold text-xl mb-2">Class Scheduling</h2>
+        <p>Schedule classes and personal training sessions.</p>
+      </section>
+      <section className="bg-white p-4 rounded shadow">
+        <h2 className="font-bold text-xl mb-2">Reports</h2>
+        <p>View reports on attendance, performance, and progress.</p>
+      </section>
+    </div>
+  );
+
   const renderPanel = () => {
     switch (user.role) {
       case "member":
@@ -16,7 +73,7 @@ export default function Dashboard({ user, setUser }) {
       case "admin":
         return <AdminPanel />;
       default:
-        return null; // ProtectedRoute prevents invalid roles from reaching here
+        return <p>User role not recognized.</p>;
     }
   };
 
