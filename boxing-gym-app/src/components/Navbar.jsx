@@ -2,7 +2,8 @@ import { Link } from "react-router-dom";
 
 function Navbar({ user, setUser }) {
   const handleLogout = () => {
-    localStorage.removeItem("gymUser"); // Remove stored user
+    localStorage.removeItem("gymUser");
+    localStorage.removeItem("gymUserToken");
     setUser(null);
   };
 
@@ -46,7 +47,7 @@ function Navbar({ user, setUser }) {
                 Login
               </Link>
               <Link
-                to="/signup"  // ✅ updated to SignUp route
+                to="/signup"
                 className="bg-red-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700"
               >
                 Sign Up

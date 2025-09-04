@@ -1,63 +1,41 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import axios from "axios";
+import { toast } from "react-hot-toast";
+import config from "../config";
 
 export default function Login({ setUser }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    if (!email || !password) return toast.error("Enter email and password");
 
-    if (!email || !password) {
-      toast.error("Please fill in all fields");
-      return;
+    setLoading(true);
+    try {
+      const res = await axios.post(`${config.API_BASE_URL}/api/login`, { email, password });
+      const user = { ...res.data.user, token: res.data.token };
+      setUser(user);
+      localStorage.setItem("gymUser", JSON.stringify(user));
+      localStorage.setItem("gymUserToken", res.data.token);
+      toast.success(res.data.message || "Login successful!");
+      navigate("/dashboard");
+    } catch (err) {
+      toast.error(err.response?.data?.error || "Login failed");
+    } finally {
+      setLoading(false);
     }
-
-    // Load users from localStorage
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
-
-    // Find matching user
-    const user = users.find((u) => u.email === email && u.password === password);
-
-    if (!user) {
-      toast.error("Invalid email or password");
-      return;
-    }
-
-    // Set user in app state and localStorage
-    setUser(user);
-    localStorage.setItem("gymUser", JSON.stringify(user));
-
-    toast.success(`Welcome back, ${user.name}!`);
-    navigate("/dashboard");
   };
 
   return (
-    <form
-      onSubmit={handleLogin}
-      className="max-w-md mx-auto mt-10 p-4 border rounded shadow"
-    >
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        className="w-full mb-3 p-2 border rounded"
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        className="w-full mb-3 p-2 border rounded"
-      />
-      <button
-        type="submit"
-        className="w-full p-2 bg-green-600 text-white rounded hover:scale-105 transform transition-transform duration-300"
-      >
-        Login
+    <form onSubmit={handleLogin} className="max-w-md mx-auto mt-10 p-4 border rounded shadow space-y-4">
+      <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full p-2 border rounded" disabled={loading} />
+      <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full p-2 border rounded" disabled={loading} />
+      <button type="submit" className="w-full p-2 bg-black text-white rounded hover:bg-gray-800" disabled={loading}>
+        {loading ? "Logging in..." : "Login"}
       </button>
     </form>
   );

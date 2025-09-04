@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { toast } from "react-hot-toast";
+import config from "../config"; // Make sure API_BASE_URL is defined here
 
 export default function Bookings({ user }) {
   const [bookings, setBookings] = useState([]);
@@ -7,22 +9,32 @@ export default function Bookings({ user }) {
   const [date, setDate] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Load bookings from localStorage on mount
-  useEffect(() => {
-    const storedBookings = JSON.parse(localStorage.getItem("bookings") || "[]");
-    setBookings(storedBookings);
-  }, []);
+  // Fetch bookings from backend
+  const fetchBookings = async () => {
+    if (!user) return;
 
-  const handleBooking = (e) => {
+    try {
+      const res = await axios.get(`${config.API_BASE_URL}/api/bookings`, {
+        params: { email: user.email }, // optional, if backend supports filtering
+      });
+      setBookings(Array.isArray(res.data) ? res.data : []);
+    } catch (err) {
+      console.error("Error fetching bookings:", err);
+      toast.error("Failed to load bookings");
+      setBookings([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchBookings();
+  }, [user]);
+
+  // Handle new booking
+  const handleBooking = async (e) => {
     e.preventDefault();
 
     if (!user) {
       toast.error("Please log in to book a session");
-      return;
-    }
-
-    if (user.role !== "user") {
-      toast.error("Only regular users can book sessions");
       return;
     }
 
@@ -33,24 +45,24 @@ export default function Bookings({ user }) {
 
     setLoading(true);
 
-    const newBooking = {
-      userEmail: user.email,
-      session,
-      date,
-    };
+    try {
+      const res = await axios.post(`${config.API_BASE_URL}/api/bookings`, {
+        userEmail: user.email,
+        session,
+        date,
+      });
 
-    const updatedBookings = [...bookings, newBooking];
-    setBookings(updatedBookings);
-    localStorage.setItem("bookings", JSON.stringify(updatedBookings));
-
-    toast.success("Booking successful!");
-    setSession("");
-    setDate("");
-    setLoading(false);
+      setBookings((prev) => [...prev, res.data]);
+      toast.success("Booking successful!");
+      setSession("");
+      setDate("");
+    } catch (err) {
+      console.error("Booking error:", err);
+      toast.error("Booking failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
-
-  // Filter bookings for current user
-  const userBookings = bookings.filter((b) => b.userEmail === user?.email);
 
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">
@@ -91,11 +103,11 @@ export default function Bookings({ user }) {
 
       <div className="mt-8">
         <h2 className="text-xl font-semibold mb-2">Your Bookings</h2>
-        {userBookings.length === 0 ? (
+        {bookings.length === 0 ? (
           <p>No bookings found.</p>
         ) : (
           <ul className="space-y-2">
-            {userBookings.map((booking, index) => (
+            {bookings.map((booking, index) => (
               <li key={index} className="border p-3 rounded">
                 <strong>Session:</strong> {booking.session} <br />
                 <strong>Date:</strong> {booking.date}

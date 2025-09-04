@@ -8,12 +8,12 @@ import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
 import RoleGuard from "./components/RoleGuard.jsx";
 
-// Pages (case-sensitive)
+// Pages
 import Home from "./pages/Home.jsx";
 import Plans from "./pages/Plans.jsx";
 import Hero from "./pages/Hero.jsx";
 import Login from "./pages/Login.jsx";
-import SignUp from "./pages/SignUp.jsx"; // ✅ replaced Register
+import SignUp from "./pages/SignUp.jsx"; // renamed from Register
 import About from "./pages/About.jsx";
 import Contact from "./pages/Contact.jsx";
 import Workout from "./pages/Workout.jsx";
@@ -29,11 +29,14 @@ export default function App() {
     return JSON.parse(localStorage.getItem("gymUser")) || null;
   });
 
+  // Persist login state
   useEffect(() => {
     if (user) {
       localStorage.setItem("gymUser", JSON.stringify(user));
+      localStorage.setItem("gymUserToken", user.token || "");
     } else {
       localStorage.removeItem("gymUser");
+      localStorage.removeItem("gymUserToken");
     }
   }, [user]);
 
@@ -43,7 +46,7 @@ export default function App() {
       <ToastContainer />
 
       <Routes>
-        {/* Public Pages */}
+        {/* Public pages */}
         <Route path="/" element={<Home />} />
         <Route path="/hero" element={<Hero />} />
         <Route path="/about" element={<About />} />
@@ -53,11 +56,11 @@ export default function App() {
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/success" element={<Success />} />
 
-        {/* Auth Pages */}
-        <Route path="/signup" element={<SignUp setUser={setUser} />} /> {/* ✅ updated */}
+        {/* Auth pages */}
+        <Route path="/signup" element={<SignUp setUser={setUser} />} />
         <Route path="/login" element={<Login setUser={setUser} />} />
 
-        {/* Protected Pages */}
+        {/* Protected pages */}
         <Route
           path="/profile"
           element={user ? <UserProfile user={user} /> : <Navigate to="/login" />}
@@ -71,7 +74,7 @@ export default function App() {
           element={user ? <Dashboard user={user} setUser={setUser} /> : <Navigate to="/login" />}
         />
 
-        {/* Admin only */}
+        {/* Admin only pages */}
         <Route
           path="/admin/reports"
           element={
@@ -89,3 +92,4 @@ export default function App() {
     </>
   );
 }
+
