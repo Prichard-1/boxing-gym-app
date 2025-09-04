@@ -1,5 +1,4 @@
-// src/pages/dashboard.jsx
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
 
@@ -58,7 +57,20 @@ const AdminPanel = () => (
 );
 
 // ===== Dashboard Component =====
-export default function Dashboard({ user, setUser }) {
+export default function Dashboard() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch {
+        setUser(null);
+      }
+    }
+  }, []);
+
   const renderPanel = () => {
     if (!user) return <p className="text-red-500 text-xl">Please log in.</p>;
 
@@ -70,7 +82,7 @@ export default function Dashboard({ user, setUser }) {
       case "admin":
         return <AdminPanel />;
       default:
-        return <p>User role not recognized.</p>;
+        return <p className="text-red-500 text-xl">User role not recognized.</p>;
     }
   };
 
