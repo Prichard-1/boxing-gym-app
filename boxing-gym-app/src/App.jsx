@@ -10,7 +10,6 @@ import RoleGuard from "./components/RoleGuard.jsx";
 
 // Pages
 import Home from "./pages/Home.jsx";
-import Plans from "./pages/Plans.jsx";
 import Hero from "./pages/Hero.jsx";
 import Login from "./pages/Login.jsx";
 import SignUp from "./pages/SignUp.jsx"; // renamed from Register
