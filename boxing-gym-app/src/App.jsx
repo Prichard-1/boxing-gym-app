@@ -1,3 +1,5 @@
+
+// src/App.jsx
 import React, { useState, useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
@@ -12,24 +14,21 @@ import RoleGuard from "./components/RoleGuard.jsx";
 import Home from "./pages/Home.jsx";
 import Hero from "./pages/Hero.jsx";
 import Login from "./pages/Login.jsx";
-import SignUp from "./pages/SignUp.jsx"; // renamed from Register
+import SignUp from "./pages/SignUp.jsx";
 import About from "./pages/About.jsx";
-import Plans from './pages/Plans';
+import Plans from "./pages/Plans.jsx";
 import Contact from "./pages/Contact.jsx";
 import Workout from "./pages/Workout.jsx";
 import UserProfile from "./pages/UserProfile.jsx";
 import Success from "./pages/Success.jsx";
-import Dashboard from "./pages/Dashboard.jsx";
+import Dashboard from "./pages/Dashboard.jsx"; // updated path
 import Bookings from "./pages/Bookings.jsx";
 import PrivacyPolicy from "./pages/PrivacyPolicy.jsx";
 import ReportsPage from "./pages/ReportsPage.jsx";
 
 export default function App() {
-  const [user, setUser] = useState(() => {
-    return JSON.parse(localStorage.getItem("gymUser")) || null;
-  });
+  const [user, setUser] = useState(() => JSON.parse(localStorage.getItem("gymUser")) || null);
 
-  // Persist login state
   useEffect(() => {
     if (user) {
       localStorage.setItem("gymUser", JSON.stringify(user));
@@ -61,18 +60,9 @@ export default function App() {
         <Route path="/login" element={<Login setUser={setUser} />} />
 
         {/* Protected pages */}
-        <Route
-          path="/profile"
-          element={user ? <UserProfile user={user} /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/bookings"
-          element={user ? <Bookings user={user} /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/dashboard"
-          element={user ? <Dashboard user={user} setUser={setUser} /> : <Navigate to="/login" />}
-        />
+        <Route path="/profile" element={user ? <UserProfile user={user} /> : <Navigate to="/login" />} />
+        <Route path="/bookings" element={user ? <Bookings user={user} /> : <Navigate to="/login" />} />
+        <Route path="/dashboard" element={user ? <Dashboard user={user} setUser={setUser} /> : <Navigate to="/login" />} />
 
         {/* Admin only pages */}
         <Route
@@ -92,4 +82,3 @@ export default function App() {
     </>
   );
 }
-
