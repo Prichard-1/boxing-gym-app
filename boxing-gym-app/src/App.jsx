@@ -13,7 +13,7 @@ import Home from "./pages/Home.jsx";
 import Plans from "./pages/Plans.jsx";
 import Hero from "./pages/Hero.jsx";
 import Login from "./pages/Login.jsx";
-import Register from "./pagesregister.jsx";
+import Register from "./pages/register.jsx";
 import About from "./pages/About.jsx";
 import Contact from "./pages/Contact.jsx";
 import Workout from "./pages/Workout.jsx";
