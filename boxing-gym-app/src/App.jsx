@@ -1,5 +1,4 @@
 
-// src/App.jsx
 import React, { useState, useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
@@ -9,7 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
 import RoleGuard from "./components/RoleGuard.jsx";
-import AdminBookings from './components/AdminBookings'; 
+import AdminBookings from "./components/AdminBookings.jsx";
 
 // Pages
 import Home from "./pages/Home.jsx";
@@ -22,7 +21,7 @@ import Contact from "./pages/Contact.jsx";
 import Workout from "./pages/Workout.jsx";
 import UserProfile from "./pages/UserProfile.jsx";
 import Success from "./pages/Success.jsx";
-import Dashboard from "./pages/Dashboard.jsx"; 
+import Dashboard from "./pages/Dashboard.jsx";
 import Bookings from "./pages/Bookings.jsx";
 import PrivacyPolicy from "./pages/PrivacyPolicy.jsx";
 import ReportsPage from "./pages/ReportsPage.jsx";
@@ -53,8 +52,6 @@ export default function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/workout" element={<Workout />} />
         <Route path="/plans" element={<Plans />} />
-
-<Route path="/admin/bookings" element={<AdminBookings />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/success" element={<Success />} />
 
@@ -68,14 +65,16 @@ export default function App() {
         <Route path="/dashboard" element={user ? <Dashboard user={user} setUser={setUser} /> : <Navigate to="/login" />} />
 
         {/* Admin only pages */}
-        <Route
-          path="/admin/reports"
-          element={
-            <RoleGuard user={user} allowedRoles={["admin"]}>
-              <ReportsPage />
-            </RoleGuard>
-          }
-        />
+        <Route path="/admin/bookings" element={
+          <RoleGuard user={user} allowedRoles={["admin"]}>
+            <AdminBookings />
+          </RoleGuard>
+        } />
+        <Route path="/admin/reports" element={
+          <RoleGuard user={user} allowedRoles={["admin"]}>
+            <ReportsPage />
+          </RoleGuard>
+        } />
 
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" />} />
