@@ -13,7 +13,7 @@ export default function UserProfile() {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const email = localStorage.getItem("email"); // store email on login
+      const email = localStorage.getItem("email"); 
       if (!email) {
         setLoading(false);
         return;
