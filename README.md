@@ -17,6 +17,11 @@ A responsive web app for a boxing gym where users can:
 - **Integrations:** Google Calendar API  
 
 ---
+**WHERE APP WAS DEPLOYED**
+Backend:https://dashboard.render.com/web/srv-d2rj9ah5pdvs73dk79t0/deploys/dep-d2tj1e3e5dus73dt7qm0?r=2025-09-05%4018%3A48%3A30%7E2025-09-05%4018%3A51%3A36
+Live on:https://boxing-gym-backend.onrender.com
+Frontend deployed at :https://app.netlify.com/projects/majestic-sprite-8d5f3b/deploys/68bb3421d948d50615ba22a3
+live site:https://majestic-sprite-8d5f3b.netlify.app/
 
 ## ⚙️ Setup
 
@@ -29,8 +34,6 @@ cd boxing-gym-app
 Frontend → Netlify ( https://majestic-sprite-8d5f3b.netlify.app/)
 
 Backend → Render / Railway-style Node.js service (https://boxing-gym-backend.onrender.com).
-
-So your deployment docs should match exactly what you’ve been doing (Netlify + backend host).
 
 
 
