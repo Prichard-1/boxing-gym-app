@@ -22,7 +22,6 @@ The app integrates **Stripe, Auth0, Google Calendar API**, and the **WGER Fitnes
 - **Frontend:** React (Vite), TailwindCSS  
 - **Routing:** React Router DOM  
 - **Auth:** Auth0 API  
-- **Payments:** Stripe API  
 - **Scheduling:** Google Calendar API  
 - **Workout Data:** WGER API  
 
@@ -32,5 +31,5 @@ The app integrates **Stripe, Auth0, Google Calendar API**, and the **WGER Fitnes
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/your-username/boxing-gym-app.git
+git clone https://github.com//boxing-gym-app/Prichard-1/boxing-gym-app
 cd boxing-gym-app
