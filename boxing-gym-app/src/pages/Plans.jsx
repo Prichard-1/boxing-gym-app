@@ -34,22 +34,29 @@ export default function Plans() {
   }, []);
 
   const handleSubscribe = async (planId) => {
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        alert('Please log in to subscribe.');
-        return;
-      }
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('Please log in to subscribe.');
+      navigate('/login');
+      return;
+    }
 
+    try {
       const baseURL = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, '');
       await axios.post(`${baseURL}/api/subscribe`, { planId }, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       navigate('/booksession');
     } catch (err) {
       console.error('Subscription failed:', err);
-      alert('Subscription failed. Please try again.');
+      if (err.response?.status === 403) {
+        alert('Access denied. Please log in again or check your account.');
+      } else {
+        alert('Subscription failed. Please try again.');
+      }
     }
   };
 
@@ -84,4 +91,3 @@ export default function Plans() {
     </div>
   );
 }
-
