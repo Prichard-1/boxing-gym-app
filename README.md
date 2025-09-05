@@ -55,10 +55,10 @@ So your deployment docs should match exactly what you’ve been doing (Netlify +
    - Go to Netlify → Site Settings → Environment Variables.
    - Add:
      ```
-     VITE_API_URL=https://<your-backend-host>.onrender.com
+     VITE_API_URL=https://boxing-gym-backend.onrender.com
      VITE_AUTH0_DOMAIN=xxx.auth0.com
      VITE_AUTH0_CLIENT_ID=your_client_id
-     VITE_STRIPE_PUBLIC_KEY=pk_test_xxx
+     
      ```
 
 4. **Deploy**
