@@ -1,14 +1,21 @@
 import { useState } from 'react';
-import useBookings from '../hooks/useBookings';
 
 export default function Bookings() {
   const [session, setSession] = useState('');
   const [date, setDate] = useState('');
-  const { bookings, loading, error, createBooking } = useBookings();
+  const [bookings, setBookings] = useState([]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    await createBooking({ session, date });
+    if (!session || !date) return;
+
+    const newBooking = {
+      id: Date.now(),
+      session,
+      date,
+    };
+
+    setBookings((prev) => [...prev, newBooking]);
     setSession('');
     setDate('');
   };
@@ -16,6 +23,7 @@ export default function Bookings() {
   return (
     <div className="max-w-2xl mx-auto p-6">
       <h2 className="text-2xl font-bold mb-4">Book a Session</h2>
+
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="text"
@@ -34,17 +42,15 @@ export default function Bookings() {
         />
         <button
           type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50"
-          disabled={loading}
+          className="bg-blue-600 text-white px-4 py-2 rounded"
         >
-          {loading ? 'Booking...' : 'Book'}
+          Book
         </button>
-        {error && <p className="text-red-500 mt-2">{error}</p>}
       </form>
 
-      <h3 className="text-xl font-semibold mt-8">My Bookings</h3>
-      {loading && bookings.length === 0 ? (
-        <p className="text-gray-500 mt-2">Loading bookings...</p>
+      <h3 className="text-xl font-semibold mt-8">Booked Sessions</h3>
+      {bookings.length === 0 ? (
+        <p className="text-gray-500 mt-2">No bookings yet.</p>
       ) : (
         <ul className="space-y-2 mt-2">
           {bookings.map((b) => (
@@ -57,4 +63,5 @@ export default function Bookings() {
     </div>
   );
 }
+
 
