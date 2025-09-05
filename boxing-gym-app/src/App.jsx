@@ -5,7 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 // Components
 import Navbar from "./components/Navbar.jsx";
-import Footer from "./components/Footer.jsx";
+import Footer from "./pages/Footer.jsx";
 ;
 
 // Pages
