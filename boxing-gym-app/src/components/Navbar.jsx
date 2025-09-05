@@ -1,12 +1,6 @@
 import { Link } from "react-router-dom";
 
-function Navbar({ user, setUser }) {
-  const handleLogout = () => {
-    localStorage.removeItem("gymUser");
-    localStorage.removeItem("gymUserToken");
-    setUser(null);
-  };
-
+function Navbar() {
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
@@ -25,35 +19,23 @@ function Navbar({ user, setUser }) {
           <Link to="/plans">Plans</Link>
           <Link to="/about">About</Link>
           <Link to="/contact">Contact</Link>
-          {user && <Link to="/dashboard">Dashboard</Link>}
-          {user && user.role === "admin" && <Link to="/admin/reports">Reports</Link>}
+          <Link to="/bookings">Book Session</Link>
         </nav>
 
         {/* Auth Buttons */}
         <div className="flex space-x-4">
-          {user ? (
-            <button
-              onClick={handleLogout}
-              className="bg-gray-800 text-white px-4 py-2 rounded-lg font-semibold hover:bg-gray-700"
-            >
-              Logout
-            </button>
-          ) : (
-            <>
-              <Link
-                to="/login"
-                className="bg-black text-white px-4 py-2 rounded-lg font-semibold hover:bg-gray-800"
-              >
-                Login
-              </Link>
-              <Link
-                to="/signup"
-                className="bg-red-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700"
-              >
-                Sign Up
-              </Link>
-            </>
-          )}
+          <Link
+            to="/login"
+            className="bg-black text-white px-4 py-2 rounded-lg font-semibold hover:bg-gray-800"
+          >
+            Login
+          </Link>
+          <Link
+            to="/signup"
+            className="bg-red-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700"
+          >
+            Sign Up
+          </Link>
         </div>
       </div>
     </header>
