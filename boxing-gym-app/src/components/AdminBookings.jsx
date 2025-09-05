@@ -1,4 +1,4 @@
-import useAdminBookings from '../components/useAdminBookings';
+import useAdminBookings from '../hooks/useAdminBookings';
 
 export default function AdminBookings() {
   const { bookings, loading, error } = useAdminBookings();
