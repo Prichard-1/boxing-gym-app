@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
+import AdminBookings from "./AdminBookings"; // adjust path if needed
 
 // ===== Member Panel =====
 const MemberPanel = () => (
@@ -53,6 +54,10 @@ const AdminPanel = () => (
       <h2 className="font-bold text-xl mb-2">Reports</h2>
       <p>View reports, analytics, and attendance.</p>
     </section>
+    <section className="bg-white p-4 rounded shadow">
+      <h2 className="font-bold text-xl mb-2">All Bookings</h2>
+      <AdminBookings />
+    </section>
   </div>
 );
 
@@ -99,5 +104,3 @@ export default function Dashboard() {
     </div>
   );
 }
-
-

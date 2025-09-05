@@ -9,6 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
 import RoleGuard from "./components/RoleGuard.jsx";
+import AdminBookings from './components/AdminBookings'; 
 
 // Pages
 import Home from "./pages/Home.jsx";
@@ -21,7 +22,7 @@ import Contact from "./pages/Contact.jsx";
 import Workout from "./pages/Workout.jsx";
 import UserProfile from "./pages/UserProfile.jsx";
 import Success from "./pages/Success.jsx";
-import Dashboard from "./pages/Dashboard.jsx"; // updated path
+import Dashboard from "./pages/Dashboard.jsx"; 
 import Bookings from "./pages/Bookings.jsx";
 import PrivacyPolicy from "./pages/PrivacyPolicy.jsx";
 import ReportsPage from "./pages/ReportsPage.jsx";
@@ -52,6 +53,8 @@ export default function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/workout" element={<Workout />} />
         <Route path="/plans" element={<Plans />} />
+
+<Route path="/admin/bookings" element={<AdminBookings />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/success" element={<Success />} />
 

@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 export default function Plans() {
   const [plans, setPlans] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPlans = async () => {
@@ -31,6 +33,26 @@ export default function Plans() {
     fetchPlans();
   }, []);
 
+  const handleSubscribe = async (planId) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('Please log in to subscribe.');
+        return;
+      }
+
+      const baseURL = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, '');
+      await axios.post(`${baseURL}/api/subscribe`, { planId }, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      navigate('/booksession');
+    } catch (err) {
+      console.error('Subscription failed:', err);
+      alert('Subscription failed. Please try again.');
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto p-6">
       <h2 className="text-2xl font-bold mb-4">Membership Plans</h2>
@@ -45,6 +67,12 @@ export default function Plans() {
               <h3 className="text-xl font-semibold">{plan.name}</h3>
               <p>{plan.description}</p>
               <p className="font-bold">R{plan.price}/month</p>
+              <button
+                onClick={() => handleSubscribe(plan.id)}
+                className="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+              >
+                Subscribe
+              </button>
             </div>
           ))
         ) : (
