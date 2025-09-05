@@ -1,13 +1,26 @@
-import { useState } from "react";
-import API_BASE_URL from "../config"; // Make sure this points to your config file
+import { useState, useEffect } from "react";
+import API_BASE_URL from "../config";
 
 function Contact() {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [contacts, setContacts] = useState([]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const fetchContacts = async () => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/contacts`);
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        setContacts(data.reverse()); // show latest first
+      }
+    } catch (err) {
+      console.error("Failed to fetch contacts:", err);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -24,6 +37,7 @@ function Contact() {
       if (response.ok) {
         setSubmitted(true);
         setForm({ name: "", email: "", message: "" });
+        fetchContacts();
         setTimeout(() => setSubmitted(false), 3000);
       } else {
         alert("Failed to send message. Try again.");
@@ -36,9 +50,13 @@ function Contact() {
     }
   };
 
+  useEffect(() => {
+    fetchContacts();
+  }, []);
+
   return (
-    <div className="p-8 bg-gray-50 min-h-screen flex items-center justify-center">
-      <div className="bg-white shadow-lg rounded-xl p-6 w-full max-w-lg">
+    <div className="p-8 bg-gray-50 min-h-screen flex flex-col items-center justify-start">
+      <div className="bg-white shadow-lg rounded-xl p-6 w-full max-w-lg mb-10">
         <h2 className="text-2xl font-bold mb-6 text-center">Contact Us 📩</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -89,6 +107,23 @@ function Contact() {
           <p className="mt-4 text-green-600 font-semibold text-center">
             ✅ Your message has been sent!
           </p>
+        )}
+      </div>
+
+      <div className="w-full max-w-3xl">
+        <h3 className="text-xl font-bold mb-4 text-gray-800">Recent Contacts 🧾</h3>
+        {contacts.length === 0 ? (
+          <p className="text-gray-500">No messages received yet.</p>
+        ) : (
+          <ul className="space-y-4">
+            {contacts.map((c) => (
+              <li key={c.id || c.email + c.message} className="bg-white border border-gray-200 shadow-sm rounded-lg p-4">
+                <p className="text-lg font-semibold text-green-700">{c.name}</p>
+                <p className="text-sm text-gray-600">{c.email}</p>
+                <p className="mt-2 text-gray-800">{c.message}</p>
+              </li>
+            ))}
+          </ul>
         )}
       </div>
     </div>
