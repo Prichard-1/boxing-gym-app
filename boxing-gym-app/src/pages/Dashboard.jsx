@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
-import AdminBookings from "./components/AdminBookings"; // adjust path if needed
+import AdminBookings from "../components/AdminBookings"; // adjust path if needed
 
 // ===== Member Panel =====
 const MemberPanel = () => (
