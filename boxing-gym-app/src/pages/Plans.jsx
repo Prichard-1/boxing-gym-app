@@ -8,12 +8,14 @@ export default function Plans() {
     const fetchPlans = async () => {
       try {
         const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/plans`);
+        console.log("API response:", res.data); // 👈 check what the backend sent
         setPlans(res.data);
       } catch (err) {
-        console.error('Error fetching plans:', err);
+        console.error("Error fetching plans:", err);
       }
     };
-    fetchPlans();
+
+    fetchPlans(); 
   }, []);
 
   return (
@@ -31,3 +33,4 @@ export default function Plans() {
     </div>
   );
 }
+
