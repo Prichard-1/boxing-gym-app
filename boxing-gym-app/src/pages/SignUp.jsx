@@ -26,10 +26,8 @@ export default function SignUp() {
     setLoading(true);
 
     try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/api/register`,
-        formData
-      );
+      const baseURL = import.meta.env.VITE_API_BASE_URL.replace(/\/$/, '');
+const res = await axios.post(`${baseURL}/api/register`, formData);
 
       const { token, role, name } = res.data;
 
