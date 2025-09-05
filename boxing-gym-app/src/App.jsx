@@ -13,6 +13,7 @@ import Home from "./pages/Home.jsx";
 import Hero from "./pages/Hero.jsx";
 import Login from "./pages/Login.jsx";
 import SignUp from "./pages/SignUp.jsx";
+import Bookings from "./pages/Bookings";
 import About from "./pages/About.jsx";
 import Plans from "./pages/Plans.jsx";
 import Contact from "./pages/Contact.jsx";
@@ -44,6 +45,8 @@ export default function App() {
         <Route path="/hero" element={<Hero />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/bookings" element={user ? <Bookings user={user} /> : <Navigate to="/login" />} />
+
         <Route path="/workout" element={<Workout />} />
         <Route path="/plans" element={<Plans />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
