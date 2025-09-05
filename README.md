@@ -1,35 +1,27 @@
-# 🥊 Boxing Gym Application
+# 🥊 Boxing Gym App
 
-A modern **React + TailwindCSS** web application for a boxing gym.  
-It allows users to **register, login, book training sessions, cancel bookings, view workout plans, and make secure payments**.  
-The app integrates **Stripe, Auth0, Google Calendar API**, and the **WGER Fitness API** for workout data.
-
----
-
-## 🚀 Features
-- **Home Page** – Hero section with intro & CTA buttons.  
-- **User Authentication** – Sign up & login via **Auth0**.  
-- **Dashboard** – User profile, bookings, and session history.  
-- **Booking System** – Register for training sessions and cancel when needed.  
-- **Plans & Payments** – View subscription plans and pay securely with **Stripe**.  
-- **Workout Data** – Fetch fitness exercises via the **WGER API**.  
-- **Calendar Integration** – Sync bookings with **Google Calendar**.  
-- **Responsive Design** – Built with **TailwindCSS** for mobile & desktop.  
+A responsive web app for a boxing gym where users can:
+- Register & log in securely (Auth0)
+- Book training sessions
+- View personalized dashboards
+- Access workout plans
+- Subscribe to membership plans (Stripe)
 
 ---
 
-## 🛠 Tech Stack
-- **Frontend:** React (Vite), TailwindCSS  
-- **Routing:** React Router DOM  
-- **Auth:** Auth0 API  
-- **Scheduling:** Google Calendar API  
-- **Workout Data:** WGER API  
+## 🚀 Tech Stack
+- **Frontend:** React (Vite), Tailwind CSS  
+- **Backend:** Node.js + Express, PostgreSQL  
+- **Auth:** Auth0  
+- **Payments:** Stripe  
+- **Integrations:** Google Calendar API  
 
 ---
 
-## 📦 Installation
+## ⚙️ Setup
 
-### 1. Clone the repository
+### 1. Clone & install
 ```bash
-git clone https://github.com//boxing-gym-app/Prichard-1/boxing-gym-app
+git clone https://github.com/yourusername/boxing-gym-app.git
+cd boxing-gym-app
 cd boxing-gym-app
