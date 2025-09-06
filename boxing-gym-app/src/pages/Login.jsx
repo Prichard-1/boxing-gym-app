@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import config from "../config"; 
+import API_BASE_URL from "../config"; // ✅ Correct import
 
 export default function Login({ setUser }) {
   const [email, setEmail] = useState("");
@@ -16,7 +16,7 @@ export default function Login({ setUser }) {
 
     setLoading(true);
     try {
-      const res = await axios.post(`${config.API_BASE_URL}/api/login`, {
+      const res = await axios.post(`${API_BASE_URL}/api/login`, {
         email,
         password,
       });
@@ -65,4 +65,3 @@ export default function Login({ setUser }) {
     </form>
   );
 }
-
