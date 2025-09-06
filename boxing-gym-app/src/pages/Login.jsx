@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import config from "../../config";
+import config from "../config"; // ✅ Corrected import
 
 export default function Login({ setUser }) {
   const [email, setEmail] = useState("");
@@ -16,7 +16,11 @@ export default function Login({ setUser }) {
 
     setLoading(true);
     try {
-      const res = await axios.post(`${config.API_BASE_URL}/api/login`, { email, password });
+      const res = await axios.post(`${config.API_BASE_URL}/api/login`, {
+        email,
+        password,
+      });
+
       const user = { ...res.data.user, token: res.data.token };
       setUser(user);
       localStorage.setItem("gymUser", JSON.stringify(user));
@@ -31,12 +35,34 @@ export default function Login({ setUser }) {
   };
 
   return (
-    <form onSubmit={handleLogin} className="max-w-md mx-auto mt-10 p-4 border rounded shadow space-y-4">
-      <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full p-2 border rounded" disabled={loading} />
-      <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full p-2 border rounded" disabled={loading} />
-      <button type="submit" className="w-full p-2 bg-black text-white rounded hover:bg-gray-800" disabled={loading}>
+    <form
+      onSubmit={handleLogin}
+      className="max-w-md mx-auto mt-10 p-4 border rounded shadow space-y-4"
+    >
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        className="w-full p-2 border rounded"
+        disabled={loading}
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        className="w-full p-2 border rounded"
+        disabled={loading}
+      />
+      <button
+        type="submit"
+        className="w-full p-2 bg-black text-white rounded hover:bg-gray-800"
+        disabled={loading}
+      >
         {loading ? "Logging in..." : "Login"}
       </button>
     </form>
   );
 }
+
