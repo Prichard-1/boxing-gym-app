@@ -1,7 +1,6 @@
-const config = {
-  API_BASE_URL: import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, ''),
-};
+// src/config.js
+const API_BASE_URL = "https://boxing-gym-backend.onrender.com";
+export default API_BASE_URL;
 
-export default config;
 
 
