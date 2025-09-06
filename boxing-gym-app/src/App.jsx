@@ -6,7 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 // Components
 import Navbar from "./components/Navbar.jsx";
 import Footer from "./pages/Footer.jsx";
-;
+import ProtectedRoute from "./pages/ProtectedRoute.jsx";
 
 // Pages
 import Home from "./pages/Home.jsx";
@@ -45,18 +45,45 @@ export default function App() {
         <Route path="/hero" element={<Hero />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/bookings" element={user ? <Bookings user={user} /> : <Navigate to="/login" />} />
-
-        <Route path="/workout" element={<Workout />} />
-        <Route path="/plans" element={<Plans />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/success" element={<Success />} />
 
-        {/* Auth pages */}
-        <Route path="/signup" element={<SignUp setUser={setUser} />} />
-        <Route path="/login" element={<Login setUser={setUser} />} />
+        {/* Protected pages */}
+        <Route
+          path="/bookings"
+          element={
+            <ProtectedRoute user={user}>
+              <Bookings user={user} />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/plans"
+          element={
+            <ProtectedRoute user={user}>
+              <Plans />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/workout"
+          element={
+            <ProtectedRoute user={user}>
+              <Workout />
+            </ProtectedRoute>
+          }
+        />
 
-       
+        {/* Auth pages */}
+        <Route
+          path="/login"
+          element={user ? <Navigate to="/bookings" /> : <Login setUser={setUser} />}
+        />
+        <Route
+          path="/signup"
+          element={user ? <Navigate to="/bookings" /> : <SignUp setUser={setUser} />}
+        />
+
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
@@ -65,3 +92,4 @@ export default function App() {
     </>
   );
 }
+
