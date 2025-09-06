@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import config from "../config"; // ✅ Corrected import
+import config from "../config"; 
 
 export default function Login({ setUser }) {
   const [email, setEmail] = useState("");
