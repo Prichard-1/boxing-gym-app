@@ -1,16 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
 
-function Navbar() {
-  const [user, setUser] = useState(null);
+function Navbar({ user, setUser }) {
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("gymUser"));
-    if (storedUser) {
-      setUser(storedUser);
-    }
-  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("gymUser");
